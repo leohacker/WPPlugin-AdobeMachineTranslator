@@ -25,10 +25,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-
-
 if(!class_exists('AdobeMachineTranslator'))
 {
+    // include the global variable of languages arrays.
+    require_once(sprintf("%s/languages_adobe.php", dirname(__FILE__)));
+    // AMTSettings class
     require_once(sprintf("%s/settings.php", dirname(__FILE__)));
 
     class AdobeMachineTranslator
@@ -40,8 +41,17 @@ if(!class_exists('AdobeMachineTranslator'))
         public function __construct()
         {
             $this->plugin_settings = new AMTSettings();
+
             $plugin = plugin_basename(__FILE__);
+            $plugin_root = plugins_url('', __FILE__);
             add_filter("plugin_action_links_$plugin", array(&$this->plugin_settings, 'plugin_settings_link'));
+
+            wp_register_style( 'microsoft-ajax-translation', $plugin_root.'/style/microsoft-ajax-translation.css', false, '20120229', 'screen' );
+            //wp_register_script( 'jquery-translate', $this->pluginRoot . 'js/jquery.translate-1.4.7.min.js', array('jquery'), '1.4.7', true );
+            wp_register_script( 'jquery-translate', $plugin_root.'/js/jquery.translate-1.4.7.js', array('jquery'), '1.4.7', true );
+            // for debugging
+            wp_enqueue_style('microsoft-ajax-translation' );
+            wp_enqueue_script( 'jquery-translate' );
         }
 
         /**

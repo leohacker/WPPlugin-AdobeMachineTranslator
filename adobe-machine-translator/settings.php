@@ -204,14 +204,13 @@ if(!class_exists('AMTSettings'))
                                $this->page_name,
                                $this->section_name
                                );
-            /*
+
             add_settings_field('languages',
                                'Languages',
                                array(&$this, 'show_languages'),
                                $this->page_name,
                                $this->section_name
                                );
-            */
         }
 
         /**
@@ -241,22 +240,72 @@ if(!class_exists('AMTSettings'))
             $this->show_checkbox(array('index' => 'copy_background',
                                        'label' => 'Copy background color from page body'));
             $this->show_input_text('background', 10, true);
-            echo '<span class="description" style="padding-left: 10px" >Background color in the format #5AF or #55AAFF</span>';
+
+            ?>
+            <span class="description" style="padding-left: 10px" >Background color in the format #5AF or #55AAFF</span>
+            <?php
         }
 
         public function show_exclude()
         {
             $this->show_checkbox(array('index' => 'exclude_home',
-                                     'label' => 'Exclude home page'));
+                                       'label' => 'Exclude home page'));
             $this->show_input_text('exclude_list', 60, true);
-            echo '<br />';
-            echo '<span class="description">A comma separated list of post and page ID’s</span>';
+
+            ?>
+            <br />
+            <span class="description">A comma separated list of post and page ID’s</span>
+            <?php
         }
 
         public function show_dnt()
         {
             $this->show_input_text('DNT_jquery_selector', 20, true);
-            echo '<span class="description" style="padding-left: 10px" >Selector in jQuery format (See the FAQ)</span>';
+
+            ?>
+            <span class="description" style="padding-left: 10px" >Selector in jQuery format (See the FAQ)</span>
+            <?php
+        }
+
+        public function show_languages()
+        {
+        ?>
+            <table class="translate_links">
+                <tr>
+                    <?php
+                        global $languages_English;
+                        global $languages_localized;
+
+                        $languages = (array)$this->options['languages'];
+                        $name = $this->option_name.'[languages][]';
+
+                        $plugin_root = plugins_url('', __FILE__);
+
+                        $number_langs = count($languages_English);
+                        $i = 0;
+                        foreach ( $languages_English as $lang_id => $lang_english ) {
+                            if ( $i % 10 == 0 ) {
+                                echo '<td valign="top">'."\n";
+                            }
+                            $localized = $languages_localized[$lang_id];
+                            $checked = in_array($lang_id, $languages) ? 'checked' : '';
+
+                            $output = sprintf('<label valign="bottom"><input valign="center" type="checkbox" name="%s" %s value="%s" />'.
+                                              ' <img class="translate_flag %s" src="%s/images/transparent.gif" alt="%s" width="16" height="11" />'.
+                                              ' <span>%s</span></label><br />',
+                                              $name, $checked, $lang_id,
+                                              $lang_id, $plugin_root, $localized, $lang_english
+                                              );
+                            echo $output;
+                            if ( $i %10 == 9 ) {
+                                echo '</td>'."\n";
+                            }
+                            ++$i;
+                        }
+                    ?>
+                </tr>
+            </table>
+        <?php
         }
 
         /**
@@ -271,7 +320,7 @@ if(!class_exists('AMTSettings'))
             $option = $options[$index];
 
             $name = $this->option_name.'['.$index.']';
-            $checked = ($option) ? 'checked="checked"' : '';
+            $checked = ($option) ? 'checked' : '';
             $type = "checkbox";
 
             $output = sprintf('<label><input name="%s" type="%s" %s /> %s </label><br/>',
@@ -295,7 +344,7 @@ if(!class_exists('AMTSettings'))
             $option = $options[$index];
 
             $name = $this->option_name.'['.$index.']';
-            $checked = ($value == $option) ? 'checked="checked"' : '';
+            $checked = ($value == $option) ? 'checked' : '';
             $type = "radio";
 
             $output = sprintf('<label><input name="%s" value="%s" type="%s" %s /> %s </label><br/>',
@@ -311,7 +360,7 @@ if(!class_exists('AMTSettings'))
             $name = $this->option_name.'['.$index.']';
             $type = "text";
 
-            $disable = $enable ? '' : 'disabled="disabled"' ;
+            $disable = $enable ? '' : 'disabled' ;
 
             $output = sprintf('<input name="%s" value="%s" size="%d" type="%s" %s />',
                               $name, $option, $size, $type, $disable);
