@@ -35,6 +35,7 @@ if(!class_exists('AMTSettings'))
         private $page_name = "AMT_options_page";            // option page name
         private $section_name = "AMT_options_section";      // section name in option page
         private $option_name = "AMT_options";               // name in DB for options.
+        private $option_page;
 
         private $default_options = array(       // default values for options
             'enable_post' => true,              // is stored as "1" and "0" in database or returns false if the option doesn't exist
@@ -89,11 +90,20 @@ if(!class_exists('AMTSettings'))
          */
         public function add_menu()
         {
-            add_options_page("Adobe Machine Translator Settings",   // page_title
-                             "Adobe Machine Translator",            // menu_title
-                             'manage_options',                      // capability
-                             $this->page_name,                      // menu_slug, page id
-                             array(&$this, 'settings_page'));       // callback function to create the settings page.
+            $this->option_page = add_options_page("Adobe Machine Translator Settings",   // page_title
+                                     "Adobe Machine Translator",            // menu_title
+                                     'manage_options',                      // capability
+                                     $this->page_name,                      // menu_slug, page id
+                                     array(&$this, 'settings_page'));       // callback function to create the settings page.
+            add_action('admin_enqueue_scripts', array($this, 'settings_page_style_js'));
+        }
+
+        public function settings_page_style_js($page)
+        {
+            if ( $page != $this->option_page )
+                return;
+            wp_enqueue_style('AMT_admin_style', plugins_url('style/settings.css', __FILE__));
+            wp_enqueue_script('AMT_admin_script', plugins_url('js/settings.js', __FILE__));
         }
 
         /**
@@ -304,6 +314,10 @@ if(!class_exists('AMTSettings'))
                     ?>
                 </tr>
             </table>
+            <p>
+                <input type="button" class="button" id="languages_all" value="All" />
+                <input type="button" class="button" id="languages_none" value="None" />
+            </p>
         <?php
         }
 
