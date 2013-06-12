@@ -59,7 +59,9 @@ if(!class_exists('AMTSettings'))
 
         public function __construct()
         {
-            $this->options = get_option($this->option_name, $default_options);
+            // load the default option if the options aren't existed in database yet.
+            $this->options = get_option($this->option_name, $this->default_options);
+            update_option($this->option_name, $this->options);
 
             // register the option name into DB, construct the contents of option page.
             add_action('admin_init', array(&$this, 'init_settings'));
@@ -79,7 +81,7 @@ if(!class_exists('AMTSettings'))
 
         public function set_options_default()
         {
-            update_option($this->option_name, $default_options);
+            update_option($this->option_name, $this->default_options);
         }
 
         /**
@@ -369,7 +371,7 @@ if(!class_exists('AMTSettings'))
          */
         function sanitize($input)
         {
-            // update the $this->options.
+            // update the $this->options before saving the options into database.
             $this->options = $input;
             return $this->options;
         }
