@@ -32,20 +32,35 @@ if(!class_exists('AMTSettings'))
 {
     class AMTSettings
     {
-        private $page_name;         // option page name
-        private $section_name;      // section name in option page
-        private $option_name;       // name in DB for options.
-        private $options;           // local copy of options.
+        private $page_name = "AMT_options_page";            // option page name
+        private $section_name = "AMT_options_section";      // section name in option page
+        private $option_name = "AMT_options";               // name in DB for options.
 
+        private $default_options = array(       // default values for options
+            'enable_post' => true,              // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            'enable_comment' => false,          // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            'enabel_page' => false,              // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            'button_position' => 'bottom',      // is stored as 'top', 'bottom', or 'none'
+            'link_style' => 'text',             // is stored as 'text', 'flag', or 'flag_text'
+
+            'enable_hline' => true,             // is stored as "1" and "0" in database or returns false if the option doesn't exist
+
+            'copy_background' => false,         // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            'background' => NULL,               // is stored as NULL or CSS color in the format #5AF or #55AAFF
+
+            'exclude_home' => false,            // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            'exclude_list' => array(),          // array of post and page id's to exclude
+            'DNT_jquery_selector' => NULL,      // is stored as "" or string in the style of a jQuery selector
+
+            'languages' => array()              // array of language codes to display in popup window.
+        );
+
+        private $options;                       // local copy of options.
 
         public function __construct()
         {
-            $this->page_name = "AMT_options_page";
-            $this->section_name = "AMT_options_section";
-            $this->option_name = "AMT_options";
-            $this->options = get_option($this->option_name);
+            $this->options = get_option($this->option_name, $default_options);
 
-            // register hook functions.
             // register the option name into DB, construct the contents of option page.
             add_action('admin_init', array(&$this, 'init_settings'));
             // add plugin option page into admin menu, and use the settings API to render the option page.
@@ -64,25 +79,7 @@ if(!class_exists('AMTSettings'))
 
         public function set_options_default()
         {
-            $options = array(                       // default values for options
-                'enable_post' => true,              // is stored as "1" and "0" in database or returns false if the option doesn't exist
-                'enable_comment' => false,          // is stored as "1" and "0" in database or returns false if the option doesn't exist
-                'enabel_page' => false,              // is stored as "1" and "0" in database or returns false if the option doesn't exist
-                'button_position' => 'bottom',      // is stored as 'top', 'bottom', or 'none'
-                'link_style' => 'text',             // is stored as 'text', 'flag', or 'flag_text'
-
-                'enable_hline' => true,             // is stored as "1" and "0" in database or returns false if the option doesn't exist
-
-                'copy_background' => false,         // is stored as "1" and "0" in database or returns false if the option doesn't exist
-                'background' => NULL,               // is stored as NULL or CSS color in the format #5AF or #55AAFF
-
-                'exclude_home' => false,            // is stored as "1" and "0" in database or returns false if the option doesn't exist
-                'exclude_list' => array(),          // array of post and page id's to exclude
-                'DNT_jquery_selector' => NULL,      // is stored as "" or string in the style of a jQuery selector
-
-                'languages' => array()              // array of language codes to display in popup window.
-            );
-            update_option($this->option_name, $options);
+            update_option($this->option_name, $default_options);
         }
 
         /**
@@ -368,7 +365,7 @@ if(!class_exists('AMTSettings'))
         }
 
         /**
-         * Validate the input fields.
+         * Validate the input fields. The returned array will be stored in the database.
          */
         function sanitize($input)
         {
