@@ -32,14 +32,14 @@ if(!class_exists('AMTSettings'))
 {
     class AMTSettings
     {
-        private $page_name = "AMT_options_page";            // option page name
+        private  $page_name = "AMT_options_page";            // option page name
         private $section_name = "AMT_options_section";      // section name in option page
-        private $option_name = "AMT_options";               // name in DB for options.
+        private  $option_name = "AMT_options";               // name in DB for options.
         private $option_page;
 
         private $default_options = array(       // default values for options
             'enable_post' => true,              // is stored as "1" and "0" in database or returns false if the option doesn't exist
-            'enable_comment' => false,          // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            'enable_comment' => true,          // is stored as "1" and "0" in database or returns false if the option doesn't exist
             'enabel_page' => false,              // is stored as "1" and "0" in database or returns false if the option doesn't exist
             'button_position' => 'bottom',      // is stored as 'top', 'bottom', or 'none'
             'link_style' => 'text',             // is stored as 'text', 'flag', or 'flag_text'
@@ -47,10 +47,10 @@ if(!class_exists('AMTSettings'))
             'enable_hline' => true,             // is stored as "1" and "0" in database or returns false if the option doesn't exist
 
             'copy_background' => false,         // is stored as "1" and "0" in database or returns false if the option doesn't exist
-            'background' => NULL,               // is stored as NULL or CSS color in the format #5AF or #55AAFF
+            'background_color' => NULL,               // is stored as NULL or CSS color in the format #5AF or #55AAFF
 
             'exclude_home' => false,            // is stored as "1" and "0" in database or returns false if the option doesn't exist
-            'exclude_list' => array(),          // array of post and page id's to exclude
+            'exclude_pages' => array(),          // array of post and page id's to exclude
             'DNT_jquery_selector' => NULL,      // is stored as "" or string in the style of a jQuery selector
 
             'languages' => array()              // array of language codes to display in popup window.
@@ -58,31 +58,26 @@ if(!class_exists('AMTSettings'))
 
         private $options;                       // local copy of options.
 
+        function __get($name)
+        {
+            return $this->$name;
+        }
+
         public function __construct()
         {
             // load the default option if the options aren't existed in database yet.
             $this->options = get_option($this->option_name, $this->default_options);
             update_option($this->option_name, $this->options);
 
-            // register the option name into DB, construct the contents of option page.
-            add_action('admin_init', array(&$this, 'init_settings'));
             // add plugin option page into admin menu, and use the settings API to render the option page.
+            // admin_menu, Runs after the basic admin panel menu structure is in place.
             add_action('admin_menu', array(&$this, 'add_menu'));
-        }
 
-        /**
-         * Add a link 'Settings' beside Activate in plugins management page.
-         */
-        function plugin_settings_link($links)
-        {
-            $settings_link = '<a href="options-general.php?page='.$this->page_name.'">Settings</a>';
-            array_unshift($links, $settings_link);
-            return $links;
-        }
-
-        public function set_options_default()
-        {
-            update_option($this->option_name, $this->default_options);
+            // register the option name in DB to settings API framework, construct the logic contents of option page.
+            // admin_init, Runs at the beginning of every admin page before the page is rendered.
+            add_action('admin_init', array(&$this, 'init_settings'));
+            // another choice might be load-{page_hook}, add action to specific page. page id returned by add_options_page.
+            // @see http://codex.wordpress.org/Administration_Menus
         }
 
         /**
@@ -95,15 +90,6 @@ if(!class_exists('AMTSettings'))
                                      'manage_options',                      // capability
                                      $this->page_name,                      // menu_slug, page id
                                      array(&$this, 'settings_page'));       // callback function to create the settings page.
-            add_action('admin_enqueue_scripts', array($this, 'settings_page_style_js'));
-        }
-
-        public function settings_page_style_js($page)
-        {
-            if ( $page != $this->option_page )
-                return;
-            wp_enqueue_style('AMT_admin_style', plugins_url('style/settings.css', __FILE__));
-            wp_enqueue_script('AMT_admin_script', plugins_url('js/settings.js', __FILE__));
         }
 
         /**
@@ -130,8 +116,22 @@ if(!class_exists('AMTSettings'))
             <?php
         }
 
+        /**
+         * add the stylesheet and javascript in the page.
+         * @param $page current page name.
+         */
+        public function settings_page_style_js($page)
+        {
+            if ( $page != $this->option_page )
+                return;
+            wp_enqueue_style('AMT_admin_style', plugins_url('style/settings.css', __FILE__));
+            wp_enqueue_script('AMT_admin_script', plugins_url('js/settings.js', __FILE__));
+        }
+
         public function init_settings()
         {
+            add_action('admin_enqueue_scripts', array($this, 'settings_page_style_js'));
+
             // Same value for option group, option name and parameters of settings_fields().
             // In the WordPress codex, https://codex.wordpress.org/Function_Reference/register_setting,
             // They discussed errors and have a conclusion:
@@ -248,7 +248,7 @@ if(!class_exists('AMTSettings'))
         {
             $this->show_checkbox(array('index' => 'copy_background',
                                        'label' => 'Copy background color from page body'));
-            $this->show_input_text('background', 10, true);
+            $this->show_input_text('background_color', 10, true);
 
             ?>
             <span class="description" style="padding-left: 10px" >Background color in the format #5AF or #55AAFF</span>
@@ -259,7 +259,7 @@ if(!class_exists('AMTSettings'))
         {
             $this->show_checkbox(array('index' => 'exclude_home',
                                        'label' => 'Exclude home page'));
-            $this->show_input_text('exclude_list', 60, true);
+            $this->show_input_text('exclude_pages', 60, true);
 
             ?>
             <br />
@@ -387,8 +387,68 @@ if(!class_exists('AMTSettings'))
         {
             // update the $this->options before saving the options into database.
             $this->options = $input;
+            $this->options['background_color'] = $this->sanitize_background_color($input['background_color']);
             return $this->options;
         }
 
+        // Not necessary to check the checkbox o radio button if you implement them correctly.
+        function sanitize_link_style($value) {
+            $possible_values = array( 'text', 'flag', 'flag_text' );
+            return ( in_array( $value, $possible_values ) ) ? $value : NULL;
+        }
+
+        function sanitize_button_position($value) {
+            $possible_values = array( 'top', 'bottom', 'none' );
+            return ( in_array( $value, $possible_values ) ) ? $value : NULL;
+        }
+
+        function sanitize_checkbox($value) {
+            return ( $value ) ? 1 : 0;
+        }
+
+        function sanitize_background_color($value) { // sanitize backgroundColor string
+            $value = strtoupper( $value );
+            if ( preg_match( "/^#[\dA-F]{3}$|^#[\dA-F]{6}$/", $value ) ) // only allow strings in the format #5AF or #55AAFF
+                return $value;
+            else
+                return null;
+        }
+
+        // Comment by Leo: this function is not implemented correctly by original author.
+        // function sanitize_exclude_pages($value) { // sanitize exclude pages string
+        //     $value = explode( ",", $value );
+        //     $index = 0;
+        //     while ( $index < sizeof( $value ) ) {
+        //         $page_id_int = absint( $value[$index] );
+        //         if ( $page_id_int ) {
+        //             $value[$index] = $page_id_int;
+        //             $index++;
+        //         } else {
+        //             array_splice( $value, $index, 1 );
+        //         }
+        //     }
+        //     return $value;
+        // }
+
+        // function sanitize_selector($value) { // sanitize jQuery selector
+        //     $value = str_replace( array( "'", '"' ), "", $value ); // get rid of single and double quotes
+        //     return $value;
+        // }
+
+        // function sanitize_languages($value) { // sanitize languages option array
+        //     if ( is_array($value) ) {
+        //         $index = 0;
+        //         foreach ( $value as $lg ) {
+        //             if ( ! in_array( $lg, $this->target_languages ) ) {
+        //                 array_splice( $value, $index , 1 );
+        //                 $index--;
+        //             }
+        //             $index++;
+        //         }
+        //     } else {
+        //         $value = array(); // no languages checked sends a null string so this sets it to an empty array
+        //     }
+        //     return $value;
+        // }
     }
 }

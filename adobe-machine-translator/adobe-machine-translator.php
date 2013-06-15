@@ -71,6 +71,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * 5. Plugin API
  *    [http://codex.wordpress.org/Plugin_API]
+ *    [http://codex.wordpress.org/Plugin_API/Action_Reference]
+ *    [http://codex.wordpress.org/Plugin_API/Filter_Reference]
  *
  * 6. Reference
  *    - Plugin Resource
@@ -109,11 +111,54 @@ if(!class_exists('AdobeMachineTranslator'))
         public function __construct()
         {
             $this->plugin_settings = new AMTSettings();
+        }
+
+        public function init()
+        {
+            $options = $this->plugin_settings->options;
 
             $plugin = plugin_basename(__FILE__);
-            add_filter("plugin_action_links_$plugin", array(&$this->plugin_settings, 'plugin_settings_link'));
-
+            add_filter("plugin_action_links_$plugin", array(&$this, 'plugin_settings_link'));
             add_action('wp_enqueue_scripts', array($this, 'page_style_script'));
+
+            if (($options['enable_post'] || $options['enable_page']) && ('none' != $options['button_position'])) {
+                add_filter('the_content', array(&$this, 'filter_content'), 50);
+            }
+
+            if ($options['enable_comment']) {
+                add_filter('comment_text', array(&$this, 'filter_comment'), 50);
+            }
+                // add_filter( 'wp_footer', array( &$this, 'getLanguagePopup' ), 5 );
+                // add_filter( 'wp_footer', array( &$this, 'getFooterJS' ), 5 );
+        }
+
+        public function filter_content($content = '')
+        {
+            return $content;
+        }
+
+        public function filter_comment($content = '')
+        {
+            // if ( !is_feed() ) { // ignore feeds
+            //     $translate_block = $this -> generate_translate_block('comment');
+            //     $translate_hr = ( $this -> options['hlineEnable'] ) ? ( '<hr class="translate_hr" />' . "\n" ) : "";
+            //     $content = $content .
+            //         '<div class="translate_block" style="display: none;">' . "\n" .
+            //         $translate_hr .
+            //         $translate_block .
+            //         "</div>\n";
+            // }
+            return $content;
+        }
+
+        /**
+         * Add a link 'Settings' beside Activate in plugins management page.
+         */
+        public function plugin_settings_link($links)
+        {
+            $settings_link = '<a href="options-general.php?page='.$this->plugin_settings->page_name.'">Settings</a>';
+            array_unshift($links, $settings_link);
+            return $links;
         }
 
         public function page_style_script()
@@ -136,18 +181,12 @@ if(!class_exists('AdobeMachineTranslator'))
              *
              * Don't echo anything in setup callbacks (activate, deactivate).
          */
-        public function activate()
-        {
-            // $this->plugin_settings->set_options_default();
-        }
+        public function activate() {}
 
         /**
          * Callback function when deactivating the plugin.
          */
-        public function deactivate()
-        {
-
-        }
+        public function deactivate() {}
     }
 }
 
@@ -156,5 +195,6 @@ if(class_exists('AdobeMachineTranslator'))
     $amt_plugin = new AdobeMachineTranslator();
     register_activation_hook(__FILE__, array(&$amt_plugin, 'activate'));
     register_deactivation_hook(__FILE__, array(&$amt_plugin, 'deactivate'));
+    add_action('init', array($amt_plugin, 'init'));
 }
 ?>
