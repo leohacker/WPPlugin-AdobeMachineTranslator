@@ -41,7 +41,7 @@ if(!class_exists('AMTSettings'))
             'enable_post' => true,              // is stored as "1" and "0" in database or returns false if the option doesn't exist
             'enable_comment' => true,          // is stored as "1" and "0" in database or returns false if the option doesn't exist
             'enabel_page' => false,              // is stored as "1" and "0" in database or returns false if the option doesn't exist
-            'button_position' => 'bottom',      // is stored as 'top', 'bottom', or 'none'
+            'button_position' => 'bottom',      // is stored as 'top', 'bottom'.
             'link_style' => 'text',             // is stored as 'text', 'flag', or 'flag_text'
 
             'enable_hline' => true,             // is stored as "1" and "0" in database or returns false if the option doesn't exist
@@ -164,8 +164,7 @@ if(!class_exists('AMTSettings'))
                                array(
                                      'index' => 'button_position',
                                      'value_label' => array('top' => 'Top',
-                                                            'bottom' => 'Bottom',
-                                                            'none' => 'None')
+                                                            'bottom' => 'Bottom')
                                      )
                                );
 
@@ -283,7 +282,6 @@ if(!class_exists('AMTSettings'))
                 <tr>
                     <?php
                         global $languages_English;
-                        global $languages_localized;
 
                         $languages = (array)$this->options['languages'];
                         $name = $this->option_name.'[languages][]';
@@ -296,14 +294,14 @@ if(!class_exists('AMTSettings'))
                             if ( $i % 10 == 0 ) {
                                 echo '<td valign="top">'."\n";
                             }
-                            $localized = $languages_localized[$lang_id];
                             $checked = in_array($lang_id, $languages) ? 'checked' : '';
 
                             $output = sprintf('<label valign="bottom"><input valign="center" type="checkbox" name="%s" %s value="%s" />'.
-                                              ' <img class="translate_flag %s" src="%s/images/transparent.gif" alt="%s" width="16" height="11" />'.
+                                              ' <img class="translate_flag %s" src="%s/images/transparent.gif" width="16" height="11" alt=""/>'.
                                               ' <span>%s</span></label><br />',
                                               $name, $checked, $lang_id,
-                                              $lang_id, $plugin_root, $localized, $lang_english
+                                              $lang_id, $plugin_root,
+                                              $lang_english
                                               );
                             echo $output;
                             if ( $i %10 == 9 ) {
