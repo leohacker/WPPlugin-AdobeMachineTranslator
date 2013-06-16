@@ -105,35 +105,85 @@ if(!class_exists('AdobeMachineTranslator'))
     class AdobeMachineTranslator
     {
         private $plugin_settings;
+        private $options;
+        private $browser_lg;
+
+        private $before_translate = '['; // text to display before and after "Translate" link
+        private $after_translate = ']';
         /**
          * Constructor.
          */
         public function __construct()
         {
+            global $target_languages;
             $this->plugin_settings = new AMTSettings();
+            $this->options = $this->plugin_settings->options;
+            $this->browser_lg = $this->preferred_language( $target_languages );
         }
 
         public function init()
         {
-            $options = $this->plugin_settings->options;
-
             $plugin = plugin_basename(__FILE__);
             add_filter("plugin_action_links_$plugin", array(&$this, 'plugin_settings_link'));
             add_action('wp_enqueue_scripts', array($this, 'page_style_script'));
 
-            if (($options['enable_post'] || $options['enable_page']) && ('none' != $options['button_position'])) {
-                add_filter('the_content', array(&$this, 'filter_content'), 50);
+            if ($this->options['enable_post'] || $this->options['enable_page']) {
+                add_filter('the_content', array(&$this, 'filter_post'), 50);
             }
 
-            if ($options['enable_comment']) {
+            if ($this->options['enable_comment']) {
                 add_filter('comment_text', array(&$this, 'filter_comment'), 50);
             }
                 // add_filter( 'wp_footer', array( &$this, 'getLanguagePopup' ), 5 );
                 // add_filter( 'wp_footer', array( &$this, 'getFooterJS' ), 5 );
         }
 
-        public function filter_content($content = '')
+        /**
+         * Add a link 'Settings' beside Activate in plugins management page.
+         */
+        public function plugin_settings_link($links)
         {
+            $settings_link = '<a href="options-general.php?page='.$this->plugin_settings->page_name.'">Settings</a>';
+            array_unshift($links, $settings_link);
+            return $links;
+        }
+
+        public function page_style_script()
+        {
+            wp_enqueue_style('adobe-machine-translator', plugins_url("style/microsoft-ajax-translation.css", __FILE__), false, '20120229', 'screen');
+            wp_enqueue_script('jquery-translate', plugins_url("js/jquery.translate-1.4.7.js", __FILE__), array('jquery'), '1.4.7', true);
+            // wp_enqueue_script('jquery-translate', plugins_url("js/jquery.translate-1.4.7.min.js", __FILE__), array('jquery'), '1.4.7', true);
+        }
+
+        public function filter_post($content = '')
+        {
+            $backtrace = debug_backtrace();
+            if ( !is_feed() && // ignore feeds
+            ( "the_excerpt" != $backtrace[7]["function"] ) && // ignore excerpts
+            ( ( !is_page() && $this->options['enable_post'] ) || ( is_page() && $this->options['enable_page'] ) ) && // apply to posts or pages
+            // ! ( in_array( get_the_ID(), $this->options['exclude_pages'] ) ) && // exclude certain pages and posts
+            ! ( $this ->options['exclude_home'] && is_home() ) )
+            { // if option is set exclude home page
+                $translate_block = $this->generate_translate_block('post');
+                $translate_hr = ($this->options['enable_hline']) ? ( '<hr class="translate_hr" />'."\n" ) : "";
+                $id = get_the_ID();
+
+                $content = '<div id="content_div-' . $id . '">' . "\n" . $content . "</div>\n";
+
+                if ($this->options['button_position'] == 'bottom' ) {
+                    $content = $content .
+                        '<div class="translate_block">' . "\n"
+                        .$translate_hr
+                        .$translate_block
+                        ."</div>\n";
+                } else if ($this->options['button_position'] == 'top') {
+                    $content = '<div class="translate_block">' . "\n"
+                        .$translate_block
+                        .$translate_hr
+                        ."</div>\n"
+                        .$content;
+                }
+            }
             return $content;
         }
 
@@ -152,20 +202,172 @@ if(!class_exists('AdobeMachineTranslator'))
         }
 
         /**
-         * Add a link 'Settings' beside Activate in plugins management page.
+         * generate translate_block
+         * @return $translate_block string
+         * @param $type string a 'post or 'comment'
          */
-        public function plugin_settings_link($links)
-        {
-            $settings_link = '<a href="options-general.php?page='.$this->plugin_settings->page_name.'">Settings</a>';
-            array_unshift($links, $settings_link);
-            return $links;
+        function generate_translate_block($type = 'post') {
+            if ( 'post' == $type ) {
+                $id = get_the_ID();
+            } elseif ( 'comment' == $type ) {
+                global $comment;
+                $id = $comment -> comment_ID;
+            } else {
+                return NULL;
+            }
+
+            $browser_lg = $this->browser_lg;
+
+            $div = '<div id="ajaxPath" style="display:none;">'.admin_url('admin-ajax.php').'</div>';
+
+            global $translate_message;
+            $link_id = 'translate_button_'.$type.'-'.$id;
+            $translate_button_text = ($this->before_translate).($translate_message[$browser_lg]).($this->after_translate);
+            $href_value = sprintf("javascript:show_translate_popup('%s', '$s', '%s');", $browser_lg, $type, $id);
+            $link = sprintf('<a class="translate_translate" id="%s" lang="%s" xml:lang="%s" href="%s">%s</a>',
+                            $link_id, $browser_lg, $browser_lg, $href_value, $translate_button_text);
+
+            $img_src = plugins_url('images/transparent.gif', __FILE__);
+            $img_id = "translate_loading_".$type.'-'.$id;
+            $img = sprintf('<img src="%s" id="%s" class="translate_loading" style="display: none;" width="16" height="16" alt="" />',
+                           $img_src, $img_id);
+
+            $translate_block = $div.$link.$img."\n";
+            return $translate_block;
         }
 
-        public function page_style_script()
-        {
-            wp_enqueue_style('adobe-machine-translator', plugins_url("style/microsoft-ajax-translation.css", __FILE__), false, '20120229', 'screen');
-            wp_enqueue_script('jquery-translate', plugins_url("js/jquery.translate-1.4.7.js", __FILE__), array('jquery'), '1.4.7', true);
-            // wp_enqueue_script('jquery-translate', plugins_url("js/jquery.translate-1.4.7.min.js", __FILE__), array('jquery'), '1.4.7', true);
+        /**
+         * echoes the language popup in the wp_footer
+         */
+        /*
+        function getLanguagePopup() {
+            $numberof_languages = count( $this -> options['languages'] );
+            $languages_per_column = ceil( ( $numberof_languages + 2 ) / 3 );
+            $index = 0;
+            $output = '<div id="translate_popup" style="display: none;' .
+                ( $this -> options['backgroundColor'] ? ( ' background-color: ' . $this -> options['backgroundColor'] ) : "" ) .
+                '">' . "\n\t" .
+                '<table class="translate_links"><tr><td valign="top">' . "\n";
+            switch ( $this->options['linkStyle'] ) {
+                case 'text':
+                    foreach( $this -> options['languages'] as $lg ) {
+                        $output .= "\t\t" . '<a class="languagelink" lang="' . $lg . '" xml:lang="' . $lg . '" href="#" title="' .
+                            $this -> languages[$lg] . '">' . $this -> display_name[$lg] . '</a>' . "\n";
+                        if ( 0 == ++$index % $languages_per_column) {
+                            $output .= "\t" . '</td><td valign="top">' . "\n";
+                        }
+                    }
+                    break;
+                case 'image':
+                    foreach( $this -> options['languages'] as $lg ) {
+                        $output .= "\t\t" . '<a class="languagelink" lang="' . $lg . '" xml:lang="' . $lg . '" href="#" title="' .
+                            $this -> languages[$lg] . '"><img class="translate_flag ' . $lg . '" src="' .
+                            $this -> pluginRoot . 'images/transparent.gif" alt="' .
+                            $this -> display_name[$lg] . '" width="16" height="11" /></a>' . "\n";
+                        if ( 0 == ++$index % $languages_per_column ) {
+                            $output .= "\t" . '</td><td valign="top">' . "\n";
+                        }
+                    }
+                    break;
+                case 'imageandtext':
+                    foreach( $this -> options['languages'] as $lg ) {
+                        $output .= "\t\t" . '<a class="languagelink" lang="' . $lg . '" xml:lang="' . $lg . '" href="#" title="' .
+                            $this -> languages[$lg] . '"><img class="translate_flag ' . $lg . '" src="' .
+                            $this -> pluginRoot . 'images/transparent.gif" alt="' .
+                            $this -> display_name[$lg] . '" width="16" height="11" /> ' .
+                            $this -> display_name[$lg] . '</a>' . "\n";
+                        if ( 0 == ++$index % $languages_per_column ) {
+                            $output .= "\t" . '</td><td valign="top">' . "\n";
+                        }
+                    }
+                    break;
+            }
+            $output .= "\t\t" . '<a class="bing_branding" rel="nofollow" target="_blank" href="http://www.microsofttranslator.com/bv.aspx?from=&amp;to=' .
+                $this -> browser_lang . '&amp;a=' . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] . '" title="translate whole page">' .
+                __('powered by', $this -> textDomain ) .
+                '<img src="http://search.microsoft.com/global/search/en-us/PublishingImages/bing_logo.png" alt="Bing" title="" width="40" height="15" /></a>' .
+                "\n\t</td></tr></table>\n</div>\n";
+            echo $output;
+        }
+        */
+
+
+        /**
+         * function from: http://us.php.net/manual/en/function.http-negotiate-language.php
+         * determine which language out of an available set the user prefers most
+         * @param array $available_languages An array with language-tag-strings (must be lowercase) that are available
+         * @param string $http_accept_language An HTTP_ACCEPT_LANGUAGE string (read from $_SERVER['HTTP_ACCEPT_LANGUAGE'] if left out)
+         * @return string Best language chosen from $available_languages
+         */
+        function preferred_language($available_languages, $http_accept_language="auto") {
+            // if $http_accept_language was left out, read it from the HTTP-Header
+            if ($http_accept_language == "auto")
+                $http_accept_language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+
+            // standard  for HTTP_ACCEPT_LANGUAGE is defined under
+            // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
+            // pattern to find is therefore something like this:
+            //    1#( language-range [ ";" "q" "=" qvalue ] )
+            // where:
+            //    language-range  = ( ( 1*8ALPHA *( "-" 1*8ALPHA ) ) | "*" )
+            //    qvalue         = ( "0" [ "." 0*3DIGIT ] )
+            //            | ( "1" [ "." 0*3("0") ] )
+            preg_match_all("/([[:alpha:]]{1,8})(-([[:alpha:]|-]{1,8}))?" . "(\s*;\s*q\s*=\s*(1\.0{0,3}|0\.\d{0,3}))?\s*(,|$)/i",
+                $http_accept_language, $hits, PREG_SET_ORDER);
+
+            // default language (in case of no hits) is 'en'
+            $bestlang = 'en';
+            $bestqval = 0;
+
+            foreach ($hits as $arr) {
+                // read data from the array of this hit
+                $langprefix = strtolower ($arr[1]);
+                if (!empty($arr[3])) {
+                    $langrange = strtolower ($arr[3]);
+                    $language = $langprefix . "-" . $langrange;
+                }
+                else $language = $langprefix;
+                $qvalue = 1.0;
+                if (!empty($arr[5]))
+                    $qvalue = floatval($arr[5]);
+
+                // find q-maximal language
+                if (in_array($language,$available_languages) && ($qvalue > $bestqval)) {
+                    $bestlang = $language;
+                    $bestqval = $qvalue;
+                }
+                // if no direct hit, try the prefix only but decrease q-value by 10% (as http_negotiate_language does)
+                else if (in_array($langprefix,$available_languages) && (($qvalue * 0.9) > $bestqval)) {
+                    $bestlang = $langprefix;
+                    $bestqval = $qvalue * 0.9;
+                }
+            }
+            return $bestlang;
+        }
+
+        // The next two functions are designed to be inserted into custom theme.
+        /**
+         * get a translate button that can be used anywhere in a post or page as needed by a custom theme. This should be in the WordPress loop.
+         */
+        function translate_button() {
+            $backtrace = debug_backtrace();
+            if ( !is_feed() && // ignore feeds
+            ( "the_excerpt" != $backtrace[7]["function"] ) && // ignore excerpts
+            ( ( !is_page() && $this->options['enable_post'] ) || ( is_page() && $this->options['enable_page'] ) ) && // apply to posts or pages
+            ! ( in_array( get_the_ID(), $this -> options['exclude_pages'] ) ) && // exclude certain pages and posts
+            ! ( $this -> options['exclude_home'] && is_home() ) ) { // if option is set exclude home page
+                $translate_block = $this->generate_translate_block('post');
+                return '<div class="translate_block" style="display: none;">' . "\n" .
+                    $translate_block .
+                    "</div>\n";
+            }
+        }
+
+        /**
+         * echo a translate button for current post. This should be in the WordPress loop.
+         */
+        function adobe_ajax_translate_button() {
+            echo $this->translate_button();
         }
 
         /**
