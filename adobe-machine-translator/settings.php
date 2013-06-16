@@ -450,3 +450,4 @@ if(!class_exists('AMTSettings'))
         // }
     }
 }
+?>
