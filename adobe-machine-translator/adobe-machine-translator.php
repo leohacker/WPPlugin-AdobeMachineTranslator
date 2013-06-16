@@ -135,9 +135,7 @@ if(!class_exists('AdobeMachineTranslator'))
                 add_filter('comment_text', array(&$this, 'filter_comment'), 50);
             }
 
-            add_action('wp_footer', array($this, 'popup_languages'));
-                // add_filter( 'wp_footer', array( &$this, 'getLanguagePopup' ), 5 );
-                // add_filter( 'wp_footer', array( &$this, 'getFooterJS' ), 5 );
+            add_action('wp_footer', array($this, 'popup_languages'), 5);
         }
 
         /**
@@ -243,7 +241,7 @@ if(!class_exists('AdobeMachineTranslator'))
          */
         function popup_languages() {
             $numberof_languages = count( $this->options['languages'] );
-            $languages_per_column = ceil( ( $numberof_languages + 2 ) / 3 );
+            $languages_per_column = ceil( ( $numberof_languages + 2) / 3 );
             $index = 0;
 
             $background_color = $this->options['background_color'] ? 'background-color: '.$this->options['background_color'] : '';
@@ -253,10 +251,13 @@ if(!class_exists('AdobeMachineTranslator'))
 
             $output = sprintf('<div id="translate_popup" style="display: none; %s">', $background_color);
             $output .= "\n\t";
-            $output .= '<table class="translate_links"><tr><td valign="top">' . "\n";
+            $output .= '<table class="translate_links">'."\n\t\t".'<tr>' . "\n";
 
             foreach ($this->options['languages'] as $lg) {
-                $output .= "\t\t";
+                if ( 0 == $index % $languages_per_column ) {
+                    $output .= "\t\t\t".'<td valign="top">'."\n";
+                }
+                $output .= "\t\t\t\t";
                 $output .= sprintf('<a class="languagelink" lang="%s" xml:lang="%s" href="#" title="%s">',
                                    $lg, $lg, $languages_English[$lg]);
                 if ($this->options['link_style'] == 'flag' || $this->options['link_style'] == 'text_flag') {
@@ -267,14 +268,14 @@ if(!class_exists('AdobeMachineTranslator'))
                     $output .= $languages_localized[$lg];
                 }
                 $output .= '</a>'."\n";
-                if ( 0 == ++$index % $languages_per_column ) {
-                    $output .= "\t" . '</td><td valign="top">' . "\n";
+                ++$index;
+                if ( 0 == $index % $languages_per_column ) {
+                    $output .= "\t\t\t" . '</td>' . "\n";
                 }
 
             }
 
-            $output .= "\t\t";
-            $output .= "\n\t</td></tr></table>\n</div>\n";
+            $output .= "\t\t".'</tr>'."\n\t".'</table>'."\n".'</div>'."\n";
             echo $output;
         }
 

@@ -304,10 +304,10 @@ if(!class_exists('AMTSettings'))
                                               $lang_english
                                               );
                             echo $output;
-                            if ( $i %10 == 9 ) {
+                            ++$i;
+                            if ( $i %10 == 0 ) {
                                 echo '</td>'."\n";
                             }
-                            ++$i;
                         }
                     ?>
                 </tr>
