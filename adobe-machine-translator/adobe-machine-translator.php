@@ -134,6 +134,8 @@ if(!class_exists('AdobeMachineTranslator'))
             if ($this->options['enable_comment']) {
                 add_filter('comment_text', array(&$this, 'filter_comment'), 50);
             }
+
+            add_action('wp_footer', array($this, 'popup_languages'));
                 // add_filter( 'wp_footer', array( &$this, 'getLanguagePopup' ), 5 );
                 // add_filter( 'wp_footer', array( &$this, 'getFooterJS' ), 5 );
         }
@@ -239,58 +241,42 @@ if(!class_exists('AdobeMachineTranslator'))
         /**
          * echoes the language popup in the wp_footer
          */
-        /*
-        function getLanguagePopup() {
-            $numberof_languages = count( $this -> options['languages'] );
+        function popup_languages() {
+            $numberof_languages = count( $this->options['languages'] );
             $languages_per_column = ceil( ( $numberof_languages + 2 ) / 3 );
             $index = 0;
-            $output = '<div id="translate_popup" style="display: none;' .
-                ( $this -> options['backgroundColor'] ? ( ' background-color: ' . $this -> options['backgroundColor'] ) : "" ) .
-                '">' . "\n\t" .
-                '<table class="translate_links"><tr><td valign="top">' . "\n";
-            switch ( $this->options['linkStyle'] ) {
-                case 'text':
-                    foreach( $this -> options['languages'] as $lg ) {
-                        $output .= "\t\t" . '<a class="languagelink" lang="' . $lg . '" xml:lang="' . $lg . '" href="#" title="' .
-                            $this -> languages[$lg] . '">' . $this -> display_name[$lg] . '</a>' . "\n";
-                        if ( 0 == ++$index % $languages_per_column) {
-                            $output .= "\t" . '</td><td valign="top">' . "\n";
-                        }
-                    }
-                    break;
-                case 'image':
-                    foreach( $this -> options['languages'] as $lg ) {
-                        $output .= "\t\t" . '<a class="languagelink" lang="' . $lg . '" xml:lang="' . $lg . '" href="#" title="' .
-                            $this -> languages[$lg] . '"><img class="translate_flag ' . $lg . '" src="' .
-                            $this -> pluginRoot . 'images/transparent.gif" alt="' .
-                            $this -> display_name[$lg] . '" width="16" height="11" /></a>' . "\n";
-                        if ( 0 == ++$index % $languages_per_column ) {
-                            $output .= "\t" . '</td><td valign="top">' . "\n";
-                        }
-                    }
-                    break;
-                case 'imageandtext':
-                    foreach( $this -> options['languages'] as $lg ) {
-                        $output .= "\t\t" . '<a class="languagelink" lang="' . $lg . '" xml:lang="' . $lg . '" href="#" title="' .
-                            $this -> languages[$lg] . '"><img class="translate_flag ' . $lg . '" src="' .
-                            $this -> pluginRoot . 'images/transparent.gif" alt="' .
-                            $this -> display_name[$lg] . '" width="16" height="11" /> ' .
-                            $this -> display_name[$lg] . '</a>' . "\n";
-                        if ( 0 == ++$index % $languages_per_column ) {
-                            $output .= "\t" . '</td><td valign="top">' . "\n";
-                        }
-                    }
-                    break;
+
+            $background_color = $this->options['background_color'] ? 'background-color: '.$this->options['background_color'] : '';
+
+            global $languages_English;
+            global $languages_localized;
+
+            $output = sprintf('<div id="translate_popup" style="display: none; %s">', $background_color);
+            $output .= "\n\t";
+            $output .= '<table class="translate_links"><tr><td valign="top">' . "\n";
+
+            foreach ($this->options['languages'] as $lg) {
+                $output .= "\t\t";
+                $output .= sprintf('<a class="languagelink" lang="%s" xml:lang="%s" href="#" title="%s">',
+                                   $lg, $lg, $languages_English[$lg]);
+                if ($this->options['link_style'] == 'flag' || $this->options['link_style'] == 'text_flag') {
+                    $output .= sprintf('<img class="translate_flag %s " src="%s" alt="%s" width="16" height="11" />',
+                                       $lg, plugins_url('images/transparent.gif', __FILE__), $languages_localized[$lg]);
+                }
+                if ($this->options['link_style'] == 'text' || $this->options['link_style'] == 'text_flag') {
+                    $output .= $languages_localized[$lg];
+                }
+                $output .= '</a>'."\n";
+                if ( 0 == ++$index % $languages_per_column ) {
+                    $output .= "\t" . '</td><td valign="top">' . "\n";
+                }
+
             }
-            $output .= "\t\t" . '<a class="bing_branding" rel="nofollow" target="_blank" href="http://www.microsofttranslator.com/bv.aspx?from=&amp;to=' .
-                $this -> browser_lang . '&amp;a=' . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] . '" title="translate whole page">' .
-                __('powered by', $this -> textDomain ) .
-                '<img src="http://search.microsoft.com/global/search/en-us/PublishingImages/bing_logo.png" alt="Bing" title="" width="40" height="15" /></a>' .
-                "\n\t</td></tr></table>\n</div>\n";
+
+            $output .= "\t\t";
+            $output .= "\n\t</td></tr></table>\n</div>\n";
             echo $output;
         }
-        */
-
 
         /**
          * function from: http://us.php.net/manual/en/function.http-negotiate-language.php
