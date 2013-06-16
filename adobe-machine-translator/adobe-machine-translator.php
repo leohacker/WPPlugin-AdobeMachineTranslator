@@ -84,6 +84,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *    - Internationalization
  *      [http://codex.wordpress.org/I18n_for_WordPress_Developers]
  */
+
 /**
  * WP Plugin Help:
  *
@@ -116,12 +117,11 @@ if(!class_exists('AdobeMachineTranslator'))
         public function __construct()
         {
             $this->plugin_settings = new AMTSettings();
-
+            $this->options = $this->plugin_settings->options;
         }
 
         public function init()
         {
-            $this->options = $this->plugin_settings->options;
             global $target_languages;
             $this->browser_lg = $this->preferred_language( $target_languages );
 
@@ -225,7 +225,7 @@ if(!class_exists('AdobeMachineTranslator'))
             global $translate_message;
             $link_id = 'translate_button_'.$type.'-'.$id;
             $translate_button_text = ($this->before_translate).($translate_message[$browser_lg]).($this->after_translate);
-            $href_value = sprintf("javascript:show_translate_popup('%s', '$s', '%s');", $browser_lg, $type, $id);
+            $href_value = sprintf("javascript:show_translate_popup('%s', '%s', %d);", $browser_lg, $type, $id);
             $link = sprintf('<a class="translate_translate" id="%s" lang="%s" xml:lang="%s" href="%s">%s</a>',
                             $link_id, $browser_lg, $browser_lg, $href_value, $translate_button_text);
 
