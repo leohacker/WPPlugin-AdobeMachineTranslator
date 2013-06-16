@@ -115,14 +115,16 @@ if(!class_exists('AdobeMachineTranslator'))
          */
         public function __construct()
         {
-            global $target_languages;
             $this->plugin_settings = new AMTSettings();
-            $this->options = $this->plugin_settings->options;
-            $this->browser_lg = $this->preferred_language( $target_languages );
+
         }
 
         public function init()
         {
+            $this->options = $this->plugin_settings->options;
+            global $target_languages;
+            $this->browser_lg = $this->preferred_language( $target_languages );
+
             $plugin = plugin_basename(__FILE__);
             add_filter("plugin_action_links_$plugin", array(&$this, 'plugin_settings_link'));
             add_action('wp_enqueue_scripts', array($this, 'page_style_script'));
@@ -341,7 +343,7 @@ if(!class_exists('AdobeMachineTranslator'))
             if ( !is_feed() && // ignore feeds
             ( "the_excerpt" != $backtrace[7]["function"] ) && // ignore excerpts
             ( ( !is_page() && $this->options['enable_post'] ) || ( is_page() && $this->options['enable_page'] ) ) && // apply to posts or pages
-            ! ( in_array( get_the_ID(), $this -> options['exclude_pages'] ) ) && // exclude certain pages and posts
+            // ! ( in_array( get_the_ID(), $this -> options['exclude_pages'] ) ) && // exclude certain pages and posts
             ! ( $this -> options['exclude_home'] && is_home() ) ) { // if option is set exclude home page
                 $translate_block = $this->generate_translate_block('post');
                 return '<div class="translate_block" style="display: none;">' . "\n" .
