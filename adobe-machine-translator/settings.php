@@ -32,9 +32,9 @@ if(!class_exists('AMTSettings'))
 {
     class AMTSettings
     {
-        private  $page_name = "AMT_options_page";            // option page name
+        private $page_name = "AMT_options_page";            // option page name
         private $section_name = "AMT_options_section";      // section name in option page
-        private  $option_name = "AMT_options";               // name in DB for options.
+        private $option_name = "AMT_options";               // name in DB for options.
         private $option_page;
 
         private $default_options = array(       // default values for options
@@ -49,9 +49,9 @@ if(!class_exists('AMTSettings'))
             'copy_background' => false,         // is stored as "1" and "0" in database or returns false if the option doesn't exist
             'background_color' => NULL,               // is stored as NULL or CSS color in the format #5AF or #55AAFF
 
-            'exclude_home' => false,            // is stored as "1" and "0" in database or returns false if the option doesn't exist
-            'exclude_pages' => array(),          // array of post and page id's to exclude
-            'DNT_jquery_selector' => NULL,      // is stored as "" or string in the style of a jQuery selector
+            // 'exclude_home' => false,            // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            // 'exclude_pages' => array(),          // array of post and page id's to exclude
+            // 'DNT_jquery_selector' => NULL,      // is stored as "" or string in the style of a jQuery selector
 
             'languages' => array()              // array of language codes to display in popup window.
         );
@@ -199,19 +199,19 @@ if(!class_exists('AMTSettings'))
                                $this->section_name
                                );
 
-            add_settings_field('exclude',
-                               'Exclude',
-                               array(&$this, 'show_exclude'),
-                               $this->page_name,
-                               $this->section_name
-                               );
+            // add_settings_field('exclude',
+            //                    'Exclude',
+            //                    array(&$this, 'show_exclude'),
+            //                    $this->page_name,
+            //                    $this->section_name
+            //                    );
 
-            add_settings_field('dnt',
-                               'Do Not Translate',
-                               array(&$this, 'show_dnt'),
-                               $this->page_name,
-                               $this->section_name
-                               );
+            // add_settings_field('dnt',
+            //                    'Do Not Translate',
+            //                    array(&$this, 'show_dnt'),
+            //                    $this->page_name,
+            //                    $this->section_name
+            //                    );
 
             add_settings_field('languages',
                                'Languages',
