@@ -387,8 +387,8 @@ if(!class_exists('AdobeMachineTranslator'))
             global $languages_service;
 
             $ch = curl_init("https://cls.adobe.com/CLS/rest/MTEngine/StringTranslation/xml");
-            $from = urldecode($languages_service($_POST["from"]));
-            $to = urldecode($languages_service($_POST["to"]));
+            $from = urldecode($languages_service[$_POST["from"]]);
+            $to = urldecode($languages_service[$_POST["to"]]);
             $str =  stripslashes($_POST["str"]);
 
             curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type: application/x-www-form-urlencoded; charset=utf-8"));
@@ -399,7 +399,7 @@ if(!class_exists('AdobeMachineTranslator'))
             curl_close($ch);
             echo $response;
 
-            // die();
+            die();
         }
     }
 }
