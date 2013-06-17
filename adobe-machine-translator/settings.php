@@ -37,26 +37,27 @@ if(!class_exists('AMTSettings'))
         private $option_name = "AMT_options";               // name in DB for options.
         private $option_page;
 
-        private $default_options = array(       // default values for options
-            'enable_post' => true,              // is stored as "1" and "0" in database or returns false if the option doesn't exist
-            'enable_comment' => true,          // is stored as "1" and "0" in database or returns false if the option doesn't exist
-            'enabel_page' => false,              // is stored as "1" and "0" in database or returns false if the option doesn't exist
-            'button_position' => 'bottom',      // is stored as 'top', 'bottom'.
-            'link_style' => 'text',             // is stored as 'text', 'flag', or 'flag_text'
+        private $default_options = array(           // default values for options
+            'enable_post' => true,                  // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            'enable_comment' => true,               // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            'enabel_page' => false,                 // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            'button_position' => 'bottom',          // is stored as 'top', 'bottom'.
+            'translation_position' => 'sidebyside', // is stored as 'sidebyside', 'replace'.
+            'link_style' => 'text',                 // is stored as 'text', 'flag', or 'flag_text'
 
-            'enable_hline' => true,             // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            'enable_hline' => true,                 // is stored as "1" and "0" in database or returns false if the option doesn't exist
 
-            'copy_background' => false,         // is stored as "1" and "0" in database or returns false if the option doesn't exist
-            'background_color' => NULL,               // is stored as NULL or CSS color in the format #5AF or #55AAFF
+            'copy_background' => false,             // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            'background_color' => NULL,             // is stored as NULL or CSS color in the format #5AF or #55AAFF
 
-            // 'exclude_home' => false,            // is stored as "1" and "0" in database or returns false if the option doesn't exist
+            // 'exclude_home' => false,             // is stored as "1" and "0" in database or returns false if the option doesn't exist
             // 'exclude_pages' => array(),          // array of post and page id's to exclude
-            // 'DNT_jquery_selector' => NULL,      // is stored as "" or string in the style of a jQuery selector
+            // 'DNT_jquery_selector' => NULL,       // is stored as "" or string in the style of a jQuery selector
 
-            'languages' => array()              // array of language codes to display in popup window.
+            'languages' => array()                  // array of language codes to display in popup window.
         );
 
-        private $options;                       // local copy of options.
+        private $options;                           // local copy of options.
 
         function __get($name)
         {
@@ -154,6 +155,18 @@ if(!class_exists('AMTSettings'))
                                array(&$this, 'show_translation_scope'), // callback
                                $this->page_name,
                                $this->section_name
+                               );
+
+            add_settings_field('translation',
+                               'Translation Position',
+                               array(&$this, 'show_radio_group'),
+                               $this->page_name,
+                               $this->section_name,
+                               array(
+                                     'index' => 'translation_position',
+                                     'value_label' => array('sidebyside' => 'Side by Side',
+                                                            'replace' => 'Replace')
+                                     )
                                );
 
             add_settings_field('button',
