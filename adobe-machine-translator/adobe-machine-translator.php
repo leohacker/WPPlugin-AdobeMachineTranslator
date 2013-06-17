@@ -138,6 +138,9 @@ if(!class_exists('AdobeMachineTranslator'))
             }
 
             add_action('wp_footer', array($this, 'popup_languages'), 5);
+
+            add_action("wp_ajax_get_translate", array($this, "adobe_machine_translation_ajax_get_translate"));
+            add_action("wp_ajax_nopriv_get_translate", array($this, "adobe_machine_translation_ajax_get_translate"));
         }
 
         /**
@@ -153,7 +156,7 @@ if(!class_exists('AdobeMachineTranslator'))
         public function page_style_script()
         {
             wp_enqueue_style('adobe-machine-translator', plugins_url("style/microsoft-ajax-translation.css", __FILE__), false, '20120229', 'screen');
-            wp_enqueue_script('jquery-translate', plugins_url("js/jquery.translate-1.4.7.js", __FILE__), array('jquery'), '1.4.7', true);
+            wp_enqueue_script('jquery-translate', plugins_url("js/jquery.translate-1.4.7-mo.js", __FILE__), array('jquery'), '1.4.7', true);
             // wp_enqueue_script('jquery-translate', plugins_url("js/jquery.translate-1.4.7.min.js", __FILE__), array('jquery'), '1.4.7', true);
         }
 
@@ -378,6 +381,24 @@ if(!class_exists('AdobeMachineTranslator'))
          * Callback function when deactivating the plugin.
          */
         public function deactivate() {}
+
+        function adobe_machine_translation_ajax_get_translate()
+        {
+            $ch = curl_init("https://cls.adobe.com/CLS/rest/MTEngine/StringTranslation/xml");
+            $from = urldecode($_POST["from"]);
+            $to = urldecode($_POST["to"]);
+            $str =  stripslashes($_POST["str"]);
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type: application/x-www-form-urlencoded; charset=utf-8"));
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt ($ch, CURLOPT_POSTFIELDS,"from=".urlencode($from)."&to=".urlencode($to)."&str=".urlencode($str));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            echo $response;
+
+            // die();
+        }
     }
 }
 
