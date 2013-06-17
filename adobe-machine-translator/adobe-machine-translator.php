@@ -167,7 +167,8 @@ if(!class_exists('AdobeMachineTranslator'))
             ( "the_excerpt" != $backtrace[7]["function"] ) && // ignore excerpts
             ( ( !is_page() && $this->options['enable_post'] ) || ( is_page() && $this->options['enable_page'] ) ) && // apply to posts or pages
             // ! ( in_array( get_the_ID(), $this->options['exclude_pages'] ) ) && // exclude certain pages and posts
-            ! ( $this ->options['exclude_home'] && is_home() ) )
+            ! ( $this ->options['exclude_home'] && is_home() ) &&
+            ( count($this->options['languages']) > 0 ) )
             { // if option is set exclude home page
                 $translate_block = $this->generate_translate_block('post');
                 $translate_hr = ($this->options['enable_hline']) ? ( '<hr class="translate_hr" />'."\n" ) : "";
@@ -393,7 +394,11 @@ if(!class_exists('AdobeMachineTranslator'))
 
             curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type: application/x-www-form-urlencoded; charset=utf-8"));
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt ($ch, CURLOPT_POSTFIELDS,"from=".urlencode($from)."&to=".urlencode($to)."&str=".urlencode($str));
+            curl_setopt ($ch, CURLOPT_POSTFIELDS,
+                         "from=".urlencode($from)
+                         ."&to=".urlencode($to)
+                         ."&str=".urlencode($str)
+                         ."&cid=".urlencode('Blog'));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             $response = curl_exec($ch);
             curl_close($ch);
