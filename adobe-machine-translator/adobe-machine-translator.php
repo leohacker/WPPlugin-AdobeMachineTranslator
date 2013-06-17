@@ -139,8 +139,8 @@ if(!class_exists('AdobeMachineTranslator'))
 
             add_action('wp_footer', array($this, 'popup_languages'), 5);
 
-            add_action("wp_ajax_get_translate", array($this, "adobe_machine_translation_ajax_get_translate"));
-            add_action("wp_ajax_nopriv_get_translate", array($this, "adobe_machine_translation_ajax_get_translate"));
+            add_action("wp_ajax_get_translate", array($this, "AMT_ajax_get_translate"));
+            add_action("wp_ajax_nopriv_get_translate", array($this, "AMT_ajax_get_translate"));
         }
 
         /**
@@ -382,11 +382,13 @@ if(!class_exists('AdobeMachineTranslator'))
          */
         public function deactivate() {}
 
-        function adobe_machine_translation_ajax_get_translate()
+        function AMT_ajax_get_translate()
         {
+            global $languages_service;
+
             $ch = curl_init("https://cls.adobe.com/CLS/rest/MTEngine/StringTranslation/xml");
-            $from = urldecode($_POST["from"]);
-            $to = urldecode($_POST["to"]);
+            $from = urldecode($languages_service($_POST["from"]));
+            $to = urldecode($languages_service($_POST["to"]));
             $str =  stripslashes($_POST["str"]);
 
             curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type: application/x-www-form-urlencoded; charset=utf-8"));
