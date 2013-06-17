@@ -16,7 +16,59 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-$languages_service = array(
+$languages_enabled = array( // 49
+    // 'ar',     // Arabic
+    // 'bg',     // Bulgarian
+    // 'ca',     // Catalan
+    // 'cs',     // Czech
+    // 'da',     // Danish
+    'de',     // German
+    // 'el',     // Greek
+    // 'en',     // English
+    'es',     // Spanish
+    // 'et',     // Estonian
+    // 'fa',     // Persian
+    // 'fi',     // Finnish
+    'fr',     // French
+    // 'ga',     // Irish
+    // 'gl',     // Galician
+    // 'he',     // Hebrew
+    // 'hi',     // Hindi
+    // 'hr',     // Croatian
+    // 'hu',     // Hungarian
+    // 'id',     // Indonesian
+    // 'is',     // Icelandic
+    // 'it',     // Italian
+    'ja',     // Japanese
+    // 'ko',     // Korean
+    // 'lt',     // Lithuanian
+    // 'lv',     // Latvian
+    // 'mk',     // Macedonian
+    // 'ms',     // Malay
+    // 'mt',     // Maltese
+    // 'nl',     // Dutch
+    // 'no',     // Norwegian
+    // 'pl',     // Polish
+    // 'pt',     // Portuguese
+    // 'ro',     // Romanian
+    // 'ru',     // Russian
+    // 'sk',     // Slovak
+    // 'sl',     // Slovenian
+    // 'sq',     // Albanian
+    // 'sr',     // Serbian
+    // 'sv',     // Swedish
+    // 'sw',     // Swahili
+    // 'th',     // Thai
+    // 'tl',     // Filipino
+    // 'tr',     // Turkish
+    // 'uk',     // Ukrainian
+    // 'vi',     // Vietnamese
+    // 'yi',     // Yiddish
+    'zh-CHS',  // Chinese (Simplified)
+    // 'zh-CHT'   // Chinese (Traditional)
+);
+
+$languages_service = array( // 37
     'ar' => 'ar_AE',
     'bg' => 'bg_BG',
     'ca' => 'ca_ES',
@@ -56,7 +108,7 @@ $languages_service = array(
     'vi' => 'vi_VN',
 );
 
-$languages_English = array(
+$languages_English = array( //37
     'ar' => 'Arabic',
     'bg' => 'Bulgarian',
     'ca' => 'Catalan',
@@ -96,7 +148,7 @@ $languages_English = array(
     'vi' => 'Vietnamese',
 );
 
-$target_languages = array(
+$target_languages = array(  //48
     'ar',     // Arabic
     'bg',     // Bulgarian
     'ca',     // Catalan
@@ -147,7 +199,7 @@ $target_languages = array(
     'zh-CHT'   // Chinese (Traditional)
 );
 
-$languages_localized = array(
+$languages_localized = array(   // 52
     'af' => 'Afrikaans',
     'ar' => 'العربية',
     'be' => 'Беларуская',
@@ -202,7 +254,7 @@ $languages_localized = array(
     'zh-CHT' => '中文 (繁體)'
 );
 
-$translate_message = array(
+$translate_message = array( //52
     'af' => 'Vertaal',
     'ar' => 'ترجمة',
     'be' => 'Перакладаць',

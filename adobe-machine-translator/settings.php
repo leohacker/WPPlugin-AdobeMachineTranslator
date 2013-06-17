@@ -282,15 +282,17 @@ if(!class_exists('AMTSettings'))
                 <tr>
                     <?php
                         global $languages_English;
+                        global $languages_enabled;
 
                         $languages = (array)$this->options['languages'];
                         $name = $this->option_name.'[languages][]';
 
                         $plugin_root = plugins_url('', __FILE__);
 
-                        $number_langs = count($languages_English);
+                        $number_langs = count($languages_enabled);
                         $i = 0;
-                        foreach ( $languages_English as $lang_id => $lang_english ) {
+                        foreach ( $languages_enabled as $lang_id ) {
+                            $lang_english = $languages_English[$lang_id];
                             if ( $i % 10 == 0 ) {
                                 echo '<td valign="top">'."\n";
                             }
