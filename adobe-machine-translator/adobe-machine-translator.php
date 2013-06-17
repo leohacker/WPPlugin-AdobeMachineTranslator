@@ -266,11 +266,11 @@ if(!class_exists('AdobeMachineTranslator'))
                 $output .= "\t\t\t\t";
                 $output .= sprintf('<a class="languagelink" lang="%s" xml:lang="%s" href="#" title="%s">',
                                    $lg, $lg, $languages_English[$lg]);
-                if ($this->options['link_style'] == 'flag' || $this->options['link_style'] == 'text_flag') {
+                if ($this->options['link_style'] == 'flag' || $this->options['link_style'] == 'flag_text') {
                     $output .= sprintf('<img class="translate_flag %s " src="%s" alt="%s" width="16" height="11" />',
                                        $lg, plugins_url('images/transparent.gif', __FILE__), $languages_localized[$lg]);
                 }
-                if ($this->options['link_style'] == 'text' || $this->options['link_style'] == 'text_flag') {
+                if ($this->options['link_style'] == 'text' || $this->options['link_style'] == 'flag_text') {
                     $output .= $languages_localized[$lg];
                 }
                 $output .= '</a>'."\n";
