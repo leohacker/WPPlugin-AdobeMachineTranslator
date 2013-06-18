@@ -68,6 +68,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *      - Add style and script only on admin page.
  *        [http://codex.wordpress.org/Plugin_API/Action_Reference/admin_enqueue_scripts]
  *        [http://codex.wordpress.org/Function_Reference/wp_enqueue_style]
+ *      - Passing parameters from PHP to Javascripts in plugins.
+ *        [http://ottopress.com/tag/wp_localize_script/]
  *
  * 5. Plugin API
  *    [http://codex.wordpress.org/Plugin_API]
@@ -129,6 +131,8 @@ if(!class_exists('AdobeMachineTranslator'))
             add_filter("plugin_action_links_$plugin", array(&$this, 'plugin_settings_link'));
             add_action('wp_enqueue_scripts', array($this, 'page_style_script'));
 
+
+
             if ($this->options['enable_post'] || $this->options['enable_page']) {
                 add_filter('the_content', array(&$this, 'filter_post'), 50);
             }
@@ -158,6 +162,10 @@ if(!class_exists('AdobeMachineTranslator'))
             wp_enqueue_style('adobe-machine-translator', plugins_url("style/microsoft-ajax-translation.css", __FILE__), false, '20120229', 'screen');
             wp_enqueue_script('jquery-translate', plugins_url("js/jquery.translate-1.4.7-mo.js", __FILE__), array('jquery'), '1.4.7', true);
             // wp_enqueue_script('jquery-translate', plugins_url("js/jquery.translate-1.4.7.min.js", __FILE__), array('jquery'), '1.4.7', true);
+
+            // Passing parameters from PHP to Javascripts in plugins. http://ottopress.com/tag/wp_localize_script/
+            $params = array('translation_position' => $this->options['translation_position']);
+            wp_localize_script('jquery-translate', 'AMTOptions', $params);
         }
 
         public function filter_post($content = '')

@@ -1641,39 +1641,52 @@ jQuery( function() {
 });
 
 function microsoft_translate( lang, type, id ) {
-	var text_node = document.getElementById( ( ( 'comment' == type ) ? 'div-' : '' ) + type + '-' + id ),
-		do_not_translate = '.translate_block',
-		loading_id;
+	// var text_node = document.getElementById( ( ( 'comment' == type ) ? 'div-' : '' ) + type + '-' + id );
+    var text_node = null;
+	var	loading_id;
 	if ( ! text_node && 'post' == type ) // some themes do not have the post-id divs so we fall back on our own div
 		text_node = document.getElementById( 'content_div-' + id );
 	if ( ! text_node && 'comment' == type ) // some themes do not have the div-comment-id divs
 		text_node = document.getElementById( 'comment-' + id );
+
+    var translation_position = AMTOptions.translation_position;
+
 	if ( text_node ) {
-		// if ( 'undefined' !== typeof ga_translation_options ) {
-		// 	if ( 'undefined' !== typeof ga_translation_options['do_not_translate_selector'] ) {
-		// 		do_not_translate += ', ' + ga_translation_options['do_not_translate_selector'];
-		// 	}
-		// }
 		var text= text_node.innerHTML;
 		loading_id = '#translate_loading_' + type + '-' + id;
 		jQ_button_id = jQuery( '#translate_button_' + type + '-' + id );
-         var data = {
-				action: 'get_translate',
-				from: 'en',
-				to: lang,
-				str: text
-				};
-	jQuery( loading_id ).show();
-	// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
-	jQuery.post(jQuery("#ajaxPath").text(), data).done(function(response) {
-			jQuery( loading_id ).hide();
-			var transBlock = jQ_button_id.parent();
-			display_translation(transBlock, response);
-		});
-	}
+        jQuery( loading_id ).show();
+
+        var data = {
+            action: 'get_translate',
+            from: 'en',
+            to: lang,
+            str: text
+        };
+
+    	// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
+    	jQuery.post(jQuery("#ajaxPath").text(), data).done(function(response) {
+           jQuery( loading_id ).hide();
+           // var transBlock = jQ_button_id.parent();
+           // var transBlock = jQuery( text_node ).parent();
+           display_translation(jQuery( text_node ), response, type, id);
+           if ( translation_position == 'replace') {
+                jQuery( text_node ).hide();
+           }
+       });
+    }
 	jQuery( '#translate_popup' ).slideUp( 'fast' ); // Close the popup
 }
 
+function display_translation(element, xml, type, id) {
+     xmlDoc = jQuery.parseXML( xml );
+     translate = jQuery(xmlDoc).find( "TranslatedText" );
+     var t = jQuery("<div/>").html(translate).text();
+     var classid = "traslated-html-" + type + '-' + id;
+     jQuery( '.'+classid ).remove();
+     t = '<div class="' + classid + '">'+t+"</div>";
+     element.after(t);
+}
 
 function localize_languages( browser_lang, popup_id ) {
 	var language_nodes = jQuery( '#translate_popup a' ).get(),
@@ -1724,12 +1737,4 @@ function show_translate_popup( browser_lang, type, id ) {
 			jQ_popup_id.slideUp( 'fast' );
 		}
 	}
-}
-
-function display_translation(element, xml) {
-	 xmlDoc = jQuery.parseXML( xml );
-     translate = jQuery(xmlDoc).find( "TranslatedText" );
-	 var t = jQuery("<div/>").html(translate).text();
-	 t = "<div class='traslated-html'>"+t+"</div>";
-	 element.append(t);
 }
