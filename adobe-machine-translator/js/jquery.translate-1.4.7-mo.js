@@ -16,14 +16,15 @@ jQuery( function() {
 function microsoft_translate( lang, type, id ) {
     if ( type == "comment" ) {
         translate_comment(lang, id);
-    } else {
+    } else {    // page is another type of post.
         translate_post(lang, id);
     }
 }
 
 function translate_comment(lang, id) {
-    var comment_id_translation = 'content_comment-' + id + '-translation';
-    var comment_id_orig = 'content_comment-' + id + '-orig';
+    var type = 'comment';
+    var comment_id_translation = 'content_' + type + '-' + id + '-translation';
+    var comment_id_orig = 'content_' + type + '-' + id + '-orig';
 
     var text_node = document.getElementById( comment_id_orig );
 
@@ -38,7 +39,7 @@ function translate_comment(lang, id) {
 
     text_node = jQuery('#'+ comment_id_translation);
 
-    translate_node(text_node, lang, 'comment', id);
+    translate_node(text_node, lang, type, id);
 
     jQuery( '#translate_popup' ).slideUp( 'fast' ); // Close the popup
     if ( translation_position == "replace") {
@@ -48,16 +49,16 @@ function translate_comment(lang, id) {
 }
 
 function translate_post(lang, id) {
-
-    var post_id_orig = 'post-' + id + '-orig';
-    var post_id_translation = 'post-' + id + '-translation';
-    var title_id_orig = 'title-' + id + '-orig';
-    var content_id_orig = 'content_post-' + id + '-orig';
+    var type = 'post'
+    var post_id_orig        = type + '-' + id + '-orig';
+    var post_id_translation = type + '-' + id + '-translation';
+    var title_id_orig       = 'title' + '-' + id + '-orig';
+    var content_id_orig     = 'content_' + type + '-' + id + '-orig';
 
     var text_node = document.getElementById( content_id_orig );
-	var post_node = document.getElementById( 'post' + '-' + id );
+	var post_node = document.getElementById( type + '-' + id );
     if ( !post_node ) {
-        post_node = jQuery('#post-' + id + '-orig');
+        post_node = jQuery('#'+post_id_orig);
     }
 	if ( !post_node ) { // some themes do not have the post-id divs so we fall back on our own div, and find the parent (entry-content)'s parent (article).
         post_node = jQuery( text_node ).parent().parent();
@@ -66,17 +67,17 @@ function translate_post(lang, id) {
     jQuery( post_node ).after( jQuery(post_node).clone());
 
     // remove old the translation post.
-    jQuery( '#' + post_id_translation).remove();
+    jQuery('#'+post_id_translation).remove();
     // change the second post id to translation.
-    jQuery( '#' + post_id_orig + ':nth-child(2)').attr('id', post_id_translation);
+    jQuery('#'+post_id_orig + ':nth-child(2)').attr('id', post_id_translation);
 
     var translation_position = AMTOptions.translation_position;
 
     title_node = jQuery('#'+ post_id_translation + ' #' + title_id_orig);
     text_node = jQuery('#'+ post_id_translation + ' #' + content_id_orig);
 
-    translate_node(title_node, lang, 'post', id);
-    translate_node(text_node, lang, 'post', id);
+    translate_node(title_node, lang, type, id);
+    translate_node(text_node, lang, type, id);
 
     jQuery( '#translate_popup' ).slideUp( 'fast' ); // Close the popup
     if ( translation_position == "replace") {
