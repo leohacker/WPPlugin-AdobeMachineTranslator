@@ -411,8 +411,9 @@ if(!class_exists('AdobeMachineTranslator'))
             $to = urldecode($languages_service[$_POST["to"]]);
             $str =  stripslashes($_POST["str"]);
 
-            // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-            // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+            curl_setopt($ch, CURLOPT_CAINFO, plugin_dir_path(__FILE__)."cacert.pem");
             curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type: application/x-www-form-urlencoded; charset=utf-8"));
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt ($ch, CURLOPT_POSTFIELDS,
