@@ -246,18 +246,32 @@ if(!class_exists('AdobeMachineTranslator'))
             $div = '<div id="ajaxPath" style="display:none;">'.admin_url('admin-ajax.php').'</div>';
 
             global $translate_message;
-            $link_id = 'translate_button_'.$type.'-'.$id;
+            $translate_button_id = 'translate_button_'.$type.'-'.$id;
             $translate_button_text = ($this->before_translate).($translate_message[$browser_lg]).($this->after_translate);
             $href_value = sprintf("javascript:show_translate_popup('%s', '%s', %d);", $browser_lg, $type, $id);
-            $link = sprintf('<a class="translate_translate" id="%s" lang="%s" xml:lang="%s" href="%s">%s</a>',
-                            $link_id, $browser_lg, $browser_lg, $href_value, $translate_button_text);
+            $translate_button = sprintf('<a class="translate_button" id="%s" lang="%s" xml:lang="%s" href="%s">%s</a>',
+                            $translate_button_id, $browser_lg, $browser_lg, $href_value, $translate_button_text);
+
+            $origin_text = 'Show Origin';
+            $origin_button_id = 'origin_button_'.$type.'-'.$id;
+            $origin_button_text = ($this->before_translate).$origin_text.($this->after_translate);
+            $herf_value = sprintf("javascript:show_origin('%s', '%s');", $type, $id);
+            $origin_button = sprintf('<a class="translate_button" id="%s" href="%s" style="display: none;">%s</a>',
+                                     $origin_button_id, $herf_value, $origin_button_text);
+
+            $hide_text = 'Hide';
+            $hide_button_id = 'hide_button_'.$type.'-'.$id;
+            $hide_button_text = ($this->before_translate).$hide_text.($this->after_translate);
+            $herf_value = sprintf("javascript:hide_translate('%s', '%s');", $type, $id);
+            $hide_button = sprintf('<a class="translate_button" id="%s" href="%s" style="display: none;">%s</a>',
+                                   $hide_button_id, $herf_value, $hide_button_text);
 
             $img_src = plugins_url('images/transparent.gif', __FILE__);
             $img_id = "translate_loading_".$type.'-'.$id;
             $img = sprintf('<img src="%s" id="%s" class="translate_loading" style="display: none;" width="16" height="16" alt="" />',
                            $img_src, $img_id);
 
-            $translate_block = $div.$link.$img."\n";
+            $translate_block = $div.$translate_button.$origin_button.$hide_button.$img."\n";
             return $translate_block;
         }
 
@@ -423,6 +437,9 @@ if(!class_exists('AdobeMachineTranslator'))
                          ."&cid=".urlencode('Blog'));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             $response = curl_exec($ch);
+            // if (curl_errno($ch)) {
+            //     $response = $_POST["str"];
+            // }
             curl_close($ch);
             echo $response;
 
