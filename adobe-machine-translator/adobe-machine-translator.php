@@ -243,7 +243,7 @@ if(!class_exists('AdobeMachineTranslator'))
 
             $browser_lg = $this->browser_lg;
 
-            $div = '<div id="ajaxPath" style="display:none;">'.admin_url('admin-ajax.php').'</div>';
+            $div = '<div id="ajaxPath" style="display: none;">'.admin_url('admin-ajax.php').'</div>';
 
             global $translate_message;
             $translate_button_id = 'translate_button_'.$type.'-'.$id;
@@ -256,14 +256,14 @@ if(!class_exists('AdobeMachineTranslator'))
             $origin_button_id = 'origin_button_'.$type.'-'.$id;
             $origin_button_text = ($this->before_translate).$origin_text.($this->after_translate);
             $herf_value = sprintf("javascript:show_origin('%s', '%s');", $type, $id);
-            $origin_button = sprintf('<a class="translate_button" id="%s" href="%s" style="display: none;">%s</a>',
+            $origin_button = sprintf('<a class="translate_button" style="display: none;" id="%s" href="%s">%s</a>',
                                      $origin_button_id, $herf_value, $origin_button_text);
 
             $hide_text = 'Hide';
             $hide_button_id = 'hide_button_'.$type.'-'.$id;
             $hide_button_text = ($this->before_translate).$hide_text.($this->after_translate);
             $herf_value = sprintf("javascript:hide_translate('%s', '%s');", $type, $id);
-            $hide_button = sprintf('<a class="translate_button" id="%s" href="%s" style="display: none;">%s</a>',
+            $hide_button = sprintf('<a class="translate_button" style="display: none;" id="%s" href="%s">%s</a>',
                                    $hide_button_id, $herf_value, $hide_button_text);
 
             $img_src = plugins_url('images/transparent.gif', __FILE__);

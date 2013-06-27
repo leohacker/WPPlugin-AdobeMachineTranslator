@@ -35,17 +35,49 @@ function translate_comment(lang, id) {
     // change the second post id to translation.
     jQuery( '#' + comment_id_orig + ':nth-child(2)').attr('id', comment_id_translation);
 
-    var translation_position = AMTOptions.translation_position;
+    // hide the translation post.
+    jQuery('#'+comment_id_translation).hide();
+    jQuery( '#translate_popup' ).slideUp( 'fast' ); // Close the popup
 
     text_node = jQuery('#'+ comment_id_translation);
+    translate_comment_node(text_node, lang, type, id);
+}
 
-    translate_node(text_node, lang, type, id);
+function translate_comment_node(text_node, lang, type, id) {
+        var loading_id;
 
-    jQuery( '#translate_popup' ).slideUp( 'fast' ); // Close the popup
-    if ( translation_position == "replace") {
-        jQuery('#' + comment_id_orig).hide();
-    }
+        loading_id = '#translate_loading_' + type + '-' + id;
+        jQ_button_id = jQuery( '#translate_button_' + type + '-' + id );
+        jQuery( loading_id ).show();
+        // translate the post content.
+        var text= text_node.html();
+        var data = {
+            action: 'get_translate',
+            from: 'en',
+            to: lang,
+            str: text
+        };
 
+        // since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
+        jQuery.post(jQuery("#ajaxPath").text(), data).done(function(response) {
+            jQuery( loading_id ).hide();
+            insert_translation(text_node, response);
+
+            var comment_id_translation = 'content_' + type + '-' + id + '-translation';
+            var comment_id_orig = 'content_' + type + '-' + id + '-orig';
+
+            var translate_node = jQuery('#'+comment_id_translation);
+            translate_node.show();
+            jQuery('#' + 'translate_button_' + type + '-' + id).hide();
+
+            var translation_position = AMTOptions.translation_position;
+            jQuery('#hide_button_' + type + '-' + id).show();
+            if ( translation_position == "replace") {
+                jQuery('#' + comment_id_orig).hide();
+                jQuery('#hide_button_' + type + '-' + id).hide();
+                jQuery('#origin_button_' + type + '-' + id).show();
+            }
+        });
 }
 
 function translate_post(lang, id) {
@@ -63,29 +95,29 @@ function translate_post(lang, id) {
 	if ( !post_node ) { // some themes do not have the post-id divs so we fall back on our own div, and find the parent (entry-content)'s parent (article).
         post_node = jQuery( text_node ).parent().parent();
     }
-    jQuery( post_node ).attr('id', post_id_orig);
-    jQuery( post_node ).after( jQuery(post_node).clone());
+    jQuery( post_node ).attr('id', post_id_orig);   // set the id to post_id_orig.
+    jQuery( post_node ).after( jQuery(post_node).clone());  // append a cloned node.
 
     // remove old the translation post.
     jQuery('#'+post_id_translation).remove();
     // change the second post id to translation.
     jQuery('#'+post_id_orig + ':nth-child(2)').attr('id', post_id_translation);
+    // hide the translation post.
+    jQuery('#'+post_id_translation).hide();
+    jQuery('#'+post_id_translation + ' .translate_loading').remove();
 
-    var translation_position = AMTOptions.translation_position;
+    jQuery( '#translate_popup' ).slideUp( 'fast' ); // Close the popup
 
     title_node = jQuery('#'+ post_id_translation + ' #' + title_id_orig);
     text_node = jQuery('#'+ post_id_translation + ' #' + content_id_orig);
 
-    translate_node(title_node, lang, type, id);
-    translate_node(text_node, lang, type, id);
+    translate_post_nodes(title_node, text_node, lang, type, id);
+    // translate_node(title_node, lang, type, id);
+    // translate_node(text_node, lang, type, id);
 
-    jQuery( '#translate_popup' ).slideUp( 'fast' ); // Close the popup
-    if ( translation_position == "replace") {
-        jQuery('#' + post_id_orig).hide();
-    }
 }
 
-function translate_node(text_node, lang, type, id) {
+function translate_post_nodes(title_node, text_node, lang, type, id) {
         var loading_id;
 
         loading_id = '#translate_loading_' + type + '-' + id;
@@ -102,9 +134,55 @@ function translate_node(text_node, lang, type, id) {
 
     	// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
     	jQuery.post(jQuery("#ajaxPath").text(), data).done(function(response) {
-            jQuery( loading_id ).hide();
             insert_translation(text_node, response);
+
+            var text = title_node.html();
+            var data = {
+                action: 'get_translate',
+                from: 'en',
+                to: lang,
+                str: text
+            };
+            jQuery.post(jQuery("#ajaxPath").text(), data).done(function(response) {
+                jQuery( loading_id ).hide();
+                insert_translation(title_node, response);
+
+                var post_id_orig        = type + '-' + id + '-orig';
+                var post_id_translation = type + '-' + id + '-translation';
+
+                var translate_node = jQuery('#'+post_id_translation);
+                translate_node.show();
+                jQuery('#'+post_id_translation + ' #' + 'translate_button_' + type + '-' + id).hide();
+
+                var translation_position = AMTOptions.translation_position;
+                jQuery('#'+post_id_translation + ' #' + 'hide_button_' + type + '-' + id).show();
+                if ( translation_position == "replace") {
+                    jQuery('#' + post_id_orig).hide();
+                    jQuery('#'+post_id_translation + ' #' + 'hide_button_' + type + '-' + id).hide();
+                    jQuery('#'+post_id_translation + ' #' + 'origin_button_' + type + '-' + id).show();
+                }
+
+
+            });
         });
+}
+
+function hide_translate(type, id) {
+    show_origin(type, id);
+}
+
+function show_origin(type, id) {
+    if( type == 'comment') {
+        jQuery('#hide_button_comment'+'-'+id).hide();
+        jQuery('#origin_button_comment'+'-'+id).hide();
+        jQuery('#translate_button_comment'+'-'+id).show();
+        type = 'content_comment';
+
+    }
+    var post_id_orig        = type + '-' + id + '-orig';
+    var post_id_translation = type + '-' + id + '-translation';
+    jQuery('#'+post_id_orig).show();
+    jQuery('#'+post_id_translation).remove();
 }
 
 function insert_translation(node, xml) {
