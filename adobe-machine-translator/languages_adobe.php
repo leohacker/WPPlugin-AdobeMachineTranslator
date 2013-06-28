@@ -17,55 +17,55 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 $languages_enabled = array( // 49
-    // 'ar',     // Arabic
-    // 'bg',     // Bulgarian
-    // 'ca',     // Catalan
-    // 'cs',     // Czech
-    // 'da',     // Danish
+    'ar',     // Arabic
+    'bg',     // Bulgarian
+    'ca',     // Catalan
+    'cs',     // Czech
+    'da',     // Danish
     'de',     // German
-    // 'el',     // Greek
-    // 'en',     // English
+    'el',     // Greek
+    'en',     // English
     'es',     // Spanish
-    // 'et',     // Estonian
+    'et',     // Estonian
     // 'fa',     // Persian
-    // 'fi',     // Finnish
+    'fi',     // Finnish
     'fr',     // French
     // 'ga',     // Irish
     // 'gl',     // Galician
-    // 'he',     // Hebrew
-    // 'hi',     // Hindi
+    'he',     // Hebrew
+    'hi',     // Hindi
     // 'hr',     // Croatian
-    // 'hu',     // Hungarian
-    // 'id',     // Indonesian
+    'hu',     // Hungarian
+    'id',     // Indonesian
     // 'is',     // Icelandic
-    // 'it',     // Italian
+    'it',     // Italian
     'ja',     // Japanese
-    // 'ko',     // Korean
-    // 'lt',     // Lithuanian
-    // 'lv',     // Latvian
+    'ko',     // Korean
+    'lt',     // Lithuanian
+    'lv',     // Latvian
     // 'mk',     // Macedonian
-    // 'ms',     // Malay
+    'ms',     // Malay
     // 'mt',     // Maltese
-    // 'nl',     // Dutch
-    // 'no',     // Norwegian
-    // 'pl',     // Polish
-    // 'pt',     // Portuguese
-    // 'ro',     // Romanian
-    // 'ru',     // Russian
-    // 'sk',     // Slovak
-    // 'sl',     // Slovenian
+    'nl',     // Dutch
+    'no',     // Norwegian
+    'pl',     // Polish
+    'pt',     // Portuguese
+    'ro',     // Romanian
+    'ru',     // Russian
+    'sk',     // Slovak
+    'sl',     // Slovenian
     // 'sq',     // Albanian
     // 'sr',     // Serbian
-    // 'sv',     // Swedish
+    'sv',     // Swedish
     // 'sw',     // Swahili
-    // 'th',     // Thai
+    'th',     // Thai
     // 'tl',     // Filipino
-    // 'tr',     // Turkish
-    // 'uk',     // Ukrainian
-    // 'vi',     // Vietnamese
+    'tr',     // Turkish
+    'uk',     // Ukrainian
+    'vi',     // Vietnamese
     // 'yi',     // Yiddish
     'zh-CHS',  // Chinese (Simplified)
-    // 'zh-CHT'   // Chinese (Traditional)
+    'zh-CHT'   // Chinese (Traditional)
 );
 
 $languages_service = array( // 37
