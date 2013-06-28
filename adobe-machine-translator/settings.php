@@ -195,22 +195,22 @@ if(!class_exists('AMTSettings'))
                                      )
                                );
 
-            add_settings_field('hline',
-                               'Horizontal Line',
-                               array(&$this, 'show_checkbox'),
-                               $this->page_name,
-                               $this->section_name,
-                               array(
-                                     'index' => 'enable_hline',
-                                     'label' => 'Show line above or below Translate button')
-                               );
+            // add_settings_field('hline',
+            //                    'Horizontal Line',
+            //                    array(&$this, 'show_checkbox'),
+            //                    $this->page_name,
+            //                    $this->section_name,
+            //                    array(
+            //                          'index' => 'enable_hline',
+            //                          'label' => 'Show line above or below Translate button')
+            //                    );
 
-            add_settings_field('backcolor',
-                               'Background color',
-                               array(&$this, 'show_background_color'),
-                               $this->page_name,
-                               $this->section_name
-                               );
+            // add_settings_field('backcolor',
+            //                    'Background color',
+            //                    array(&$this, 'show_background_color'),
+            //                    $this->page_name,
+            //                    $this->section_name
+            //                    );
 
             // add_settings_field('exclude',
             //                    'Exclude',
