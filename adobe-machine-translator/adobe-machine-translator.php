@@ -158,8 +158,8 @@ if(!class_exists('AdobeMachineTranslator'))
 
         public function page_style_script()
         {
-            wp_enqueue_style('adobe-machine-translator', plugins_url("style/microsoft-ajax-translation.css", __FILE__), false, '20120229', 'screen');
-            wp_enqueue_script('jquery-translate', plugins_url("js/jquery.translate-1.4.7-mo.js", __FILE__), array('jquery'), '1.4.7', true);
+            wp_enqueue_style('adobe-machine-translator', plugins_url("style/adobe-machine-translator.css", __FILE__), false, '20120229', 'screen');
+            wp_enqueue_script('jquery-translate', plugins_url("js/amt-jquery.translate-1.4.7.js", __FILE__), array('jquery'), '1.4.7', true);
             // wp_enqueue_script('jquery-translate', plugins_url("js/jquery.translate-1.4.7.min.js", __FILE__), array('jquery'), '1.4.7', true);
 
             // Passing parameters from PHP to Javascripts in plugins. http://ottopress.com/tag/wp_localize_script/
