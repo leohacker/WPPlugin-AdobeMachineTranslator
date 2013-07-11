@@ -34,7 +34,7 @@ We inherit the functionality design from Google AJAX Translation. Microsoft AJAX
 * <a herf="http://wordpress.org/plugins/microsoft-ajax-translation/">Microsoft AJAX Translation</a>
 
 == Features ==
-* **38 languages supported.** Powered by Microsoft's state-of-the-art statistical machine translation system.
+* **39 languages supported.** Powered by Microsoft's state-of-the-art statistical machine translation system.
 * **Detects your source language automatically.** If your source text changes to more than one language it may get confused.
 * **Detects visitor's language automatically.** Show the translate button in your readers' prefered language according to their broswer UA.
 * **AJAX translation.** Better user experience as no refresh is needed.
