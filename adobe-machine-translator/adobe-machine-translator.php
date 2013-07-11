@@ -170,7 +170,7 @@ if(!class_exists('AdobeMachineTranslator'))
         public function filter_title($title = '')
         {
             $id = get_the_ID();
-            $id = 'title-'.$id.'-orig';
+            $id = 'title-'.$id;
             $title = sprintf('<span id="%s">', $id).$title.'</span>';
             return $title;
         }
@@ -189,7 +189,8 @@ if(!class_exists('AdobeMachineTranslator'))
                 // $translate_hr = ($this->options['enable_hline']) ? ( '<hr class="translate_hr" />'."\n" ) : "";
                 $id = get_the_ID();
 
-                $content = '<div id="content_post-' . $id .'-orig'. '">' . "\n" . $content . "</div>\n";
+                // $content = '<div id="content_post-' . $id .'-orig'. '">' . "\n" . $content . "</div>\n";
+                $content = '<div id="content_post-' . $id .'">' . "\n" . $content . "</div>\n";
 
                 if ($this->options['button_position'] == 'bottom' ) {
                     $content = $content .
@@ -216,7 +217,7 @@ if(!class_exists('AdobeMachineTranslator'))
                 global $comment;
                 $id = $comment->comment_ID;
                 // $translate_hr = ( $this -> options['hlineEnable'] ) ? ( '<hr class="translate_hr" />' . "\n" ) : "";
-                $content = '<div id="content_comment-' . $id .'-orig'. '">' . "\n" . $content . "</div>\n";
+                $content = '<div class="content_comment-' . $id . '">' . "\n" . $content . "</div>\n";
                 $content = $content .
                     '<div class="translate_block" style="display: none;">' . "\n" .
                     $translate_hr .

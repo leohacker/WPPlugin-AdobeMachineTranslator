@@ -23,23 +23,21 @@ function microsoft_translate( lang, type, id ) {
 
 function translate_comment(lang, id) {
     var type = 'comment';
-    var comment_id_translation = 'content_' + type + '-' + id + '-translation';
-    var comment_id_orig = 'content_' + type + '-' + id + '-orig';
+    var type_prefix = 'content_comment-';
+    var comment_id_translation = type_prefix + id + '-translation';
+    var comment_id_orig = type_prefix + id + '-orig';
+    var class_id = '.' + type_prefix + id ;
 
-    var text_node = document.getElementById( comment_id_orig );
-
-    jQuery( text_node ).after( jQuery(text_node).clone());
-
-    // remove old the translation post.
-    jQuery( '#' + comment_id_translation).remove();
-    // change the second post id to translation.
-    jQuery( '#' + comment_id_orig + ':nth-child(2)').attr('id', comment_id_translation);
+    jQuery(class_id + ':gt(0)').remove();
+    jQuery(class_id + ':first').after(jQuery(class_id + ':first').clone());
+    jQuery(class_id + ':first').attr('id', comment_id_orig);
+    jQuery(class_id + ':last').attr('id', comment_id_translation);
 
     // hide the translation post.
     jQuery('#'+comment_id_translation).hide();
     jQuery( '#translate_popup' ).slideUp( 'fast' ); // Close the popup
 
-    text_node = jQuery('#'+ comment_id_translation);
+    text_node = jQuery('#'+comment_id_translation);
     translate_comment_node(text_node, lang, type, id);
 }
 
@@ -63,8 +61,9 @@ function translate_comment_node(text_node, lang, type, id) {
             jQuery( loading_id ).hide();
             insert_translation(text_node, response);
 
-            var comment_id_translation = 'content_' + type + '-' + id + '-translation';
-            var comment_id_orig = 'content_' + type + '-' + id + '-orig';
+            var type_prefix = 'content_comment-';
+            var comment_id_translation = type_prefix + id + '-translation';
+            var comment_id_orig = type_prefix + id + '-orig';
 
             var translate_node = jQuery('#'+comment_id_translation);
             translate_node.show();
@@ -73,7 +72,7 @@ function translate_comment_node(text_node, lang, type, id) {
             var translation_position = AMTOptions.translation_position;
             jQuery('#hide_button_' + type + '-' + id).show();
             if ( translation_position == "replace") {
-                jQuery('#' + comment_id_orig).hide();
+                jQuery('#'+comment_id_orig).hide();
                 jQuery('#hide_button_' + type + '-' + id).hide();
                 jQuery('#origin_button_' + type + '-' + id).show();
             }
@@ -84,37 +83,26 @@ function translate_post(lang, id) {
     var type = 'post'
     var post_id_orig        = type + '-' + id + '-orig';
     var post_id_translation = type + '-' + id + '-translation';
-    var title_id_orig       = 'title' + '-' + id + '-orig';
-    var content_id_orig     = 'content_' + type + '-' + id + '-orig';
+    var title_id            = 'title' + '-' + id;
+    var content_id          = 'content_' + type + '-' + id;
 
-    var text_node = document.getElementById( content_id_orig );
-	var post_node = document.getElementById( type + '-' + id );
-    if ( !post_node ) {
-        post_node = jQuery('#'+post_id_orig);
-    }
-	if ( !post_node ) { // some themes do not have the post-id divs so we fall back on our own div, and find the parent (entry-content)'s parent (article).
-        post_node = jQuery( text_node ).parent().parent();
-    }
-    jQuery( post_node ).attr('id', post_id_orig);   // set the id to post_id_orig.
-    jQuery( post_node ).after( jQuery(post_node).clone());  // append a cloned node.
+    var class_id = type + '-' + id;
+    // remove the old translation post;
+    jQuery('.'+class_id + ':gt(0)').remove();
+    jQuery('.'+class_id + ':first').after(jQuery('.'+class_id+':first').clone());
+    jQuery('.'+class_id + ':first').attr('id', post_id_orig);
+    jQuery('.'+class_id + ':last').attr('id', post_id_translation);
 
-    // remove old the translation post.
-    jQuery('#'+post_id_translation).remove();
-    // change the second post id to translation.
-    jQuery('#'+post_id_orig + ':nth-child(2)').attr('id', post_id_translation);
     // hide the translation post.
     jQuery('#'+post_id_translation).hide();
     jQuery('#'+post_id_translation + ' .translate_loading').remove();
 
     jQuery( '#translate_popup' ).slideUp( 'fast' ); // Close the popup
 
-    title_node = jQuery('#'+ post_id_translation + ' #' + title_id_orig);
-    text_node = jQuery('#'+ post_id_translation + ' #' + content_id_orig);
+    title_node = jQuery('#'+ post_id_translation + ' #' + title_id);
+    text_node = jQuery('#'+ post_id_translation + ' #' + content_id);
 
     translate_post_nodes(title_node, text_node, lang, type, id);
-    // translate_node(title_node, lang, type, id);
-    // translate_node(text_node, lang, type, id);
-
 }
 
 function translate_post_nodes(title_node, text_node, lang, type, id) {
@@ -161,7 +149,6 @@ function translate_post_nodes(title_node, text_node, lang, type, id) {
                     jQuery('#'+post_id_translation + ' #' + 'hide_button_' + type + '-' + id).hide();
                     jQuery('#'+post_id_translation + ' #' + 'origin_button_' + type + '-' + id).show();
                 }
-
 
             });
         });
