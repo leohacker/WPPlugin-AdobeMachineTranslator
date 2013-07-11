@@ -16,7 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-$languages_enabled = array( // 49
+$languages_enabled = array( // 51 - 12 = 39
     'ar',     // Arabic
     'bg',     // Bulgarian
     'ca',     // Catalan
@@ -32,6 +32,7 @@ $languages_enabled = array( // 49
     'fr',     // French
     // 'ga',     // Irish
     // 'gl',     // Galician
+    'ht',     // Haitian Creole
     'he',     // Hebrew
     'hi',     // Hindi
     // 'hr',     // Croatian
@@ -62,27 +63,26 @@ $languages_enabled = array( // 49
     // 'tl',     // Filipino
     'tr',     // Turkish
     'uk',     // Ukrainian
+    'ur',     // Urdu
     'vi',     // Vietnamese
     // 'yi',     // Yiddish
     'zh-CHS',  // Chinese (Simplified)
     'zh-CHT'   // Chinese (Traditional)
 );
 
-$languages_service = array( // 37
+$languages_service = array( // 39
     'ar' => 'ar_AE',
     'bg' => 'bg_BG',
     'ca' => 'ca_ES',
-    'zh-CHS' => 'zh_CN',
-    'zh-CHT' => 'zh_TW',
     'cs' => 'cs_CZ',
     'da' => 'da_DK',
-    'nl' => 'nl_NL',
+    'de' => 'de_DE',
+    'el' => 'el_GR',
     'en' => 'en_US',
+    'es' => 'es_ES',
     'et' => 'et_EE',
     'fi' => 'fi_FI',
     'fr' => 'fr_FR',
-    'de' => 'de_DE',
-    'el' => 'el_GR',
     'ht' => 'ht_HT',
     'he' => 'he_IL',
     'hi' => 'hi_IN',
@@ -91,8 +91,10 @@ $languages_service = array( // 37
     'it' => 'it_IT',
     'ja' => 'ja_JP',
     'ko' => 'ko_KR',
-    'lv' => 'lv_LV',
     'lt' => 'lt_LT',
+    'lv' => 'lv_LV',
+    'ms' => 'ms_MY',
+    'nl' => 'nl_NL',
     'no' => 'no_NO',
     'pl' => 'pl_PL',
     'pt' => 'pt_BR',
@@ -100,15 +102,17 @@ $languages_service = array( // 37
     'ru' => 'ru_RU',
     'sk' => 'sk_SK',
     'sl' => 'sl_SI',
-    'es' => 'es_ES',
     'sv' => 'sv_SE',
     'th' => 'th_TH',
     'tr' => 'tr_TR',
     'uk' => 'uk_UA',
+    'ur' => 'ur_PK',
     'vi' => 'vi_VN',
+    'zh-CHS' => 'zh_CN',
+    'zh-CHT' => 'zh_TW'
 );
 
-$languages_English = array( //37
+$languages_English = array( //39
     'ar' => 'Arabic',
     'bg' => 'Bulgarian',
     'ca' => 'Catalan',
@@ -133,6 +137,7 @@ $languages_English = array( //37
     'ko' => 'Korean',
     'lv' => 'Latvian',
     'lt' => 'Lithuanian',
+    'ms' => 'Malay',
     'no' => 'Norwegian',
     'pl' => 'Polish',
     'pt' => 'Portuguese',
@@ -145,10 +150,11 @@ $languages_English = array( //37
     'th' => 'Thai',
     'tr' => 'Turkish',
     'uk' => 'Ukrainian',
+    'ur' => 'Urdu',
     'vi' => 'Vietnamese',
 );
 
-$target_languages = array(  //48
+$target_languages = array(  //51 - 12 = 39
     'ar',     // Arabic
     'bg',     // Bulgarian
     'ca',     // Catalan
@@ -157,26 +163,28 @@ $target_languages = array(  //48
     'de',     // German
     'el',     // Greek
     'en',     // English
+    'es',     // Spanish
     'et',     // Estonian
-    'fa',     // Persian
+    // 'fa',     // Persian
     'fi',     // Finnish
     'fr',     // French
-    'ga',     // Irish
-    'gl',     // Galician
+    // 'ga',     // Irish
+    // 'gl',     // Galician
+    'ht',     // Haiti Creole
     'he',     // Hebrew
     'hi',     // Hindi
-    'hr',     // Croatian
+    // 'hr',     // Croatian
     'hu',     // Hungarian
     'id',     // Indonesian
-    'is',     // Icelandic
+    // 'is',     // Icelandic
     'it',     // Italian
     'ja',     // Japanese
     'ko',     // Korean
     'lt',     // Lithuanian
     'lv',     // Latvian
-    'mk',     // Macedonian
+    // 'mk',     // Macedonian
     'ms',     // Malay
-    'mt',     // Maltese
+    // 'mt',     // Maltese
     'nl',     // Dutch
     'no',     // Norwegian
     'pl',     // Polish
@@ -185,53 +193,55 @@ $target_languages = array(  //48
     'ru',     // Russian
     'sk',     // Slovak
     'sl',     // Slovenian
-    'sq',     // Albanian
-    'sr',     // Serbian
+    // 'sq',     // Albanian
+    // 'sr',     // Serbian
     'sv',     // Swedish
-    'sw',     // Swahili
+    // 'sw',     // Swahili
     'th',     // Thai
-    'tl',     // Filipino
+    // 'tl',     // Filipino
     'tr',     // Turkish
     'uk',     // Ukrainian
+    'ur',     // Urdu
     'vi',     // Vietnamese
-    'yi',     // Yiddish
+    // 'yi',     // Yiddish
     'zh-CHS',  // Chinese (Simplified)
     'zh-CHT'   // Chinese (Traditional)
 );
 
-$languages_localized = array(   // 52
-    'af' => 'Afrikaans',
+$languages_localized = array(   // 54 - 15 = 39
+    // 'af' => 'Afrikaans',
     'ar' => 'العربية',
-    'be' => 'Беларуская',
+    // 'be' => 'Беларуская',
     'bg' => 'български',
     'ca' => 'català',
     'cs' => 'česky',
-    'cy' => 'Cymraeg',
+    // 'cy' => 'Cymraeg',
     'da' => 'dansk',
     'de' => 'Deutsch',
     'el' => 'ελληνική',
     'en' => 'English',
     'es' => 'español',
     'et' => 'eesti',
-    'fa' => 'فارسی',
+    // 'fa' => 'فارسی',
     'fi' => 'suomi',
     'fr' => 'français',
-    'ga' => 'Gaeilge',
-    'gl' => 'galego',
+    // 'ga' => 'Gaeilge',
+    // 'gl' => 'galego',
+    'ht' => 'Kreyòl ayisyen',
     'he' => 'עברית',
     'hi' => 'हिन्दी',
-    'hr' => 'hrvatski',
+    // 'hr' => 'hrvatski',
     'hu' => 'magyar',
     'id' => 'bahasa Indonesia',
-    'is' => 'íslenska',
+    // 'is' => 'íslenska',
     'it' => 'italiano',
     'ja' => '日本語',
     'ko' => '한국어',
     'lt' => 'lietuvių',
     'lv' => 'latviešu',
-    'mk' => 'македонски',
+    // 'mk' => 'македонски',
     'ms' => 'bahasa Melayu',
-    'mt' => 'Malti',
+    // 'mt' => 'Malti',
     'nl' => 'Nederlands',
     'no' => 'norsk',
     'pl' => 'polski',
@@ -240,53 +250,55 @@ $languages_localized = array(   // 52
     'ru' => 'русский',
     'sk' => 'slovenčina',
     'sl' => 'slovenščina',
-    'sq' => 'shqipe',
-    'sr' => 'српски',
+    // 'sq' => 'shqipe',
+    // 'sr' => 'српски',
     'sv' => 'svenska',
-    'sw' => 'Kiswahili',
+    // 'sw' => 'Kiswahili',
     'th' => 'ภาษาไทย',
-    'tl' => 'Filipino',
+    // 'tl' => 'Filipino',
     'tr' => 'Türkçe',
     'uk' => 'українська',
+    'ur' => 'اُردُو',
     'vi' => 'tiếng Việt',
-    'yi' => 'ייִדיש',
+    // 'yi' => 'ייִדיש',
     'zh-CHS' => '中文 (简体)',
     'zh-CHT' => '中文 (繁體)'
 );
 
-$translate_message = array( //52
-    'af' => 'Vertaal',
+$translate_message = array( //54 - 15 = 39
+    // 'af' => 'Vertaal',
     'ar' => 'ترجمة',
-    'be' => 'Перакладаць',
+    // 'be' => 'Перакладаць',
     'bg' => 'Преводач',
     'ca' => 'Traductor',
     'cs' => 'Překladač',
-    'cy' => 'Cyfieithu',
+    // 'cy' => 'Cyfieithu',
     'da' => 'Oversæt',
     'de' => 'Übersetzung',
     'el' => 'Μετάφραση',
     'en' => 'Translate',
     'es' => 'Traductor',
     'et' => 'Tõlkima',
-    'fa' => 'ترجمه',
+    // 'fa' => 'ترجمه',
     'fi' => 'Kääntäjä',
     'fr' => 'Traduction',
-    'ga' => 'Aistrigh',
-    'gl' => 'Traducir',
+    // 'ga' => 'Aistrigh',
+    // 'gl' => 'Traducir',
+    'ht' => 'Translate',
     'he' => 'תרגם',
     'hi' => 'अनुवाद करें',
-    'hr' => 'Prevoditelj',
+    // 'hr' => 'Prevoditelj',
     'hu' => 'Fordítás',
     'id' => 'Menerjemahkan',
-    'is' => 'Þýða',
+    // 'is' => 'Þýða',
     'it' => 'Traduttore',
     'ja' => '翻訳',
     'ko' => '번역',
     'lt' => 'Versti',
     'lv' => 'Tulkotājs',
-    'mk' => 'Преведува',
+    // 'mk' => 'Преведува',
     'ms' => 'Menerjemahkan',
-    'mt' => 'Traduċi',
+    // 'mt' => 'Traduċi',
     'nl' => 'Vertaal',
     'no' => 'Oversetter',
     'pl' => 'Tłumacz',
@@ -295,16 +307,17 @@ $translate_message = array( //52
     'ru' => 'Переводчик',
     'sk' => 'Prekladač',
     'sl' => 'Prevajalnik',
-    'sq' => 'Përkthej',
-    'sr' => 'преводилац',
+    // 'sq' => 'Përkthej',
+    // 'sr' => 'преводилац',
     'sv' => 'Översätt',
-    'sw' => 'Tafsiri',
+    // 'sw' => 'Tafsiri',
     'th' => 'แปล',
-    'tl' => 'Pagsasalin',
+    // 'tl' => 'Pagsasalin',
     'tr' => 'Tercüme etmek',
     'uk' => 'Перекладач',
+    'ur' => 'Translate',
     'vi' => 'Dịch',
-    'yi' => 'זעץ',
+    // 'yi' => 'זעץ',
     'zh-CHS' => '翻译',
     'zh-CHT' => '翻譯',
 );
